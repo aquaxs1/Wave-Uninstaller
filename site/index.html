@@ -11,13 +11,22 @@
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
 
+    <!-- Open Graph verlangt absolute URLs: Crawler lösen relative Pfade nicht
+         gegen die Seite auf, das Vorschaubild bliebe sonst leer. Die Adresse
+         zeigt auf die GitHub-Pages-Auslieferung aus .github/workflows/pages.yml
+         und muss angepasst werden, wenn die Seite woanders unter einer eigenen
+         Domain läuft. -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aquaxs1.github.io/Wave-uninstaller/" />
     <meta property="og:title" content="Wave Uninstaller" />
     <meta
       property="og:description"
       content="Deinstalliert Programme und entfernt, was ihre Uninstaller liegen lassen. Nichts wird gelöscht, nur verschoben."
     />
-    <meta property="og:image" content="./assets/inventory-fixture.png" />
+    <meta
+      property="og:image"
+      content="https://aquaxs1.github.io/Wave-uninstaller/assets/inventory-fixture.png"
+    />
   </head>
 
   <body>
