@@ -1,0 +1,151 @@
+{
+  "environment": {
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "LOCALAPPDATA": "C:\\Users\\sebi\\AppData\\Local"
+  },
+
+  "registry": {
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{23170F69-40C1-2702-2409-000001000000}": {
+      "DisplayName": { "type": "sz", "data": "7-Zip 24.09 (x64)" },
+      "DisplayVersion": { "type": "sz", "data": "24.09.00.0" },
+      "Publisher": { "type": "sz", "data": "Igor Pavlov" },
+      "InstallLocation": { "type": "expand_sz", "data": "%ProgramFiles%\\7-Zip\\" },
+      "InstallDate": { "type": "sz", "data": "20250114" },
+      "EstimatedSize": { "type": "dword", "data": 5120 },
+      "UninstallString": {
+        "type": "sz",
+        "data": "MsiExec.exe /X{23170F69-40C1-2702-2409-000001000000}"
+      },
+      "WindowsInstaller": { "type": "dword", "data": 1 }
+    },
+
+    "HKLM:32:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Notepad++": {
+      "DisplayName": { "type": "sz", "data": "Notepad++ (32-bit x86)" },
+      "DisplayVersion": { "type": "sz", "data": "8.6.9" },
+      "Publisher": { "type": "sz", "data": "Notepad++ Team" },
+      "InstallLocation": { "type": "expand_sz", "data": "%ProgramFiles(x86)%\\Notepad++" },
+      "UninstallString": {
+        "type": "sz",
+        "data": "C:\\Program Files (x86)\\Notepad++\\uninstall.exe"
+      },
+      "DisplayIcon": { "type": "sz", "data": "C:\\Program Files (x86)\\Notepad++\\notepad++.exe" }
+    },
+
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{A1B2C3D4-0000-4000-8000-00000000FFFF}": {
+      "DisplayName": {
+        "type": "sz",
+        "data": "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
+      },
+      "DisplayVersion": { "type": "sz", "data": "14.40.33810" },
+      "Publisher": { "type": "sz", "data": "Microsoft Corporation" },
+      "SystemComponent": { "type": "dword", "data": 1 },
+      "UninstallString": {
+        "type": "sz",
+        "data": "MsiExec.exe /X{A1B2C3D4-0000-4000-8000-00000000FFFF}"
+      }
+    },
+
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\KB5034123": {
+      "DisplayName": { "type": "sz", "data": "Security Update for Contoso Suite (KB5034123)" },
+      "Publisher": { "type": "sz", "data": "Contoso Ltd." },
+      "ReleaseType": { "type": "sz", "data": "Security Update" },
+      "ParentDisplayName": { "type": "sz", "data": "Contoso Suite" },
+      "UninstallString": {
+        "type": "sz",
+        "data": "MsiExec.exe /X{99999999-0000-4000-8000-000000000001}"
+      }
+    },
+
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\OrphanedEntry": {
+      "DisplayVersion": { "type": "sz", "data": "1.0.0" },
+      "Publisher": { "type": "sz", "data": "Nobody" }
+    },
+
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LockedVendorEntry": {
+      "DisplayName": { "type": "sz", "data": "Never Read" }
+    },
+
+    "HKCU:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{771FD6B0-FA20-440A-A002-3B3BAC16DC50}_is1": {
+      "DisplayName": { "type": "sz", "data": "Microsoft Visual Studio Code (User)" },
+      "DisplayVersion": { "type": "sz", "data": "1.96.2" },
+      "Publisher": { "type": "sz", "data": "Microsoft Corporation" },
+      "InstallLocation": {
+        "type": "expand_sz",
+        "data": "%LOCALAPPDATA%\\Programs\\Microsoft VS Code"
+      },
+      "InstallDate": { "type": "sz", "data": "20251203" },
+      "QuietUninstallString": {
+        "type": "sz",
+        "data": "\"C:\\Users\\sebi\\AppData\\Local\\Programs\\Microsoft VS Code\\unins000.exe\" /SILENT"
+      },
+      "UninstallString": {
+        "type": "sz",
+        "data": "\"C:\\Users\\sebi\\AppData\\Local\\Programs\\Microsoft VS Code\\unins000.exe\""
+      }
+    },
+
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AcmeDesigner": {
+      "DisplayName": { "type": "sz", "data": "Acme Designer" },
+      "DisplayVersion": { "type": "sz", "data": "3.2.0" },
+      "Publisher": { "type": "sz", "data": "Acme Corporation" },
+      "EstimatedSize": { "type": "dword", "data": 262144 },
+      "UninstallString": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Designer\\setup.exe --uninstall"
+      }
+    }
+  },
+
+  "msi_products": [
+    {
+      "product_code": "{23170F69-40C1-2702-2409-000001000000}",
+      "name": "7-Zip 24.09 (x64 edition)",
+      "version": "24.09.00.0",
+      "publisher": "Igor Pavlov",
+      "install_location": "C:\\Program Files\\7-Zip\\",
+      "install_date": "20250114",
+      "machine_scoped": true
+    },
+    {
+      "product_code": "{7B1D3E44-0000-4000-8000-0000000000AA}",
+      "name": "Acme Designer",
+      "version": "3.2.0",
+      "publisher": "Acme Corp.",
+      "install_location": "C:\\Program Files\\Acme\\Designer",
+      "machine_scoped": true
+    },
+    {
+      "product_code": "not-a-guid",
+      "name": "Broken Row",
+      "machine_scoped": true
+    }
+  ],
+
+  "appx_packages": [
+    {
+      "package_family_name": "Microsoft.WindowsTerminal_8wekyb3d8bbwe",
+      "name": "Microsoft.WindowsTerminal",
+      "display_name": "Windows Terminal",
+      "version": "1.21.3231.0",
+      "publisher": "CN=Microsoft Corporation",
+      "install_location": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.21.3231.0_x64__8wekyb3d8bbwe"
+    },
+    {
+      "package_family_name": "Microsoft.VCLibs.140.00_8wekyb3d8bbwe",
+      "name": "Microsoft.VCLibs.140.00",
+      "display_name": "Microsoft Visual C++ 2015 UWP Runtime Package",
+      "version": "14.0.33728.0",
+      "publisher": "CN=Microsoft Corporation",
+      "is_framework": true
+    }
+  ],
+
+  "paths": ["C:\\Program Files\\7-Zip", "C:\\Program Files (x86)\\Notepad++"],
+
+  "failures": {
+    "registry_access_denied": [
+      "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\LockedVendorEntry"
+    ]
+  }
+}

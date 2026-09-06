@@ -1,0 +1,27 @@
+[package]
+name = "wave-app"
+description = "The Wave Uninstaller desktop application"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "wave_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+wave-core = { path = "../crates/wave-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+
+[target.'cfg(windows)'.dependencies]
+wave-win32 = { path = "../crates/wave-win32" }

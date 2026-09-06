@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ground: #0b1220;
+  --color-surface: #121b2c;
+  --color-raised: #18243a;
+  --color-line: #24334d;
+  --color-ink: #e8eef8;
+  --color-muted: #8fa3c0;
+  --color-wave: #38bdf8;
+  --color-caution: #fbbf24;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  /* A desktop window is not a web page; text selection everywhere makes
+     dragging across a list feel broken. */
+  user-select: none;
+}
