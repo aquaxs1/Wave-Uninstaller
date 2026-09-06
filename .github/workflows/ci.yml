@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  core:
+    name: Core logic (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install the Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt,clippy
+          rustup target add x86_64-pc-windows-msvc
+      - uses: Swatinem/rust-cache@v2
+
+      - run: cargo fmt --all --check
+
+      # wave-app links against a webview and cannot build here; the Windows
+      # job covers it.
+      - name: Clippy
+        run: cargo clippy --workspace --exclude wave-app --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test -p wave-core --all-targets
+
+      # The Windows provider never compiles on Linux, so type-check it against
+      # the real bindings for the real target. Linking is what needs a Windows
+      # host; `clippy` only needs the target's standard library.
+      - name: Type-check the Windows provider
+        run: cargo clippy -p wave-win32 --target x86_64-pc-windows-msvc --all-targets -- -D warnings
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx prettier --check .
+      - run: npm run lint
+      - run: npm run build
+
+  windows:
+    name: Full build (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install stable --profile minimal --component clippy
+      - uses: Swatinem/rust-cache@v2
+
+      # tauri-build embeds dist/, so the frontend has to exist before cargo runs.
+      - run: npm ci
+      - run: npm run build
+
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace --all-targets
+      - run: cargo build --workspace

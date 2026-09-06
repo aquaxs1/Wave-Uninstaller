@@ -1,0 +1,9 @@
+dist
+target
+src-tauri/target
+src-tauri/gen
+package-lock.json
+Cargo.lock
+
+# Prose: reflowing tables produces large diffs with no benefit
+*.md
