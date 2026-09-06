@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wave Uninstaller — Deinstallieren und aufräumen</title>
+    <meta
+      name="description"
+      content="Ein Uninstaller für Windows, der auch die Reste entfernt: verwaiste Registry-Schlüssel, zurückgelassene Ordner, Dienste und Autostart-Einträge. Jede Löschung ist umkehrbar."
+    />
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Wave Uninstaller" />
+    <meta
+      property="og:description"
+      content="Deinstalliert Programme und entfernt, was ihre Uninstaller liegen lassen. Nichts wird gelöscht, nur verschoben."
+    />
+    <meta property="og:image" content="./assets/inventory-fixture.png" />
+  </head>
+
+  <body>
+    <a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="topbar">
+      <a class="wordmark" href="#top">
+        <img src="./assets/favicon.svg" alt="" width="26" height="26" />
+        <span>Wave Uninstaller</span>
+      </a>
+      <nav>
+        <a href="#funktionen">Funktionen</a>
+        <a href="#sicherheit">Sicherheit</a>
+        <a href="#roadmap">Roadmap</a>
+        <a class="ghost" href="https://github.com/aquaxs1/Wave-uninstaller">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="inhalt">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="pill">
+            <span class="dot" aria-hidden="true"></span>
+            Phase P0 von 5 — liest das Inventar, löscht noch nichts
+          </p>
+
+          <h1>Deinstallieren ist der einfache Teil.</h1>
+
+          <p class="lede">
+            Der schwierige Teil sind die Reste: verwaiste Registry-Schlüssel, zurückgelassene Ordner
+            in <code>AppData</code>, Dienste, die nichts mehr starten, Autostart-Einträge für
+            Programme, die es nicht mehr gibt. Wave findet sie — und kann jeden einzelnen Schritt
+            rückgängig machen.
+          </p>
+
+          <div class="actions">
+            <a class="button primary" href="https://github.com/aquaxs1/Wave-uninstaller">
+              Auf GitHub ansehen
+            </a>
+            <a class="button" href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md">
+              Technischer Plan
+            </a>
+          </div>
+
+          <p class="fineprint">
+            Windows 10 (1809+) und 11 · x64 und arm64 · Tauri&nbsp;2, Rust, React
+          </p>
+        </div>
+
+        <svg class="hero-wave" viewBox="0 0 800 220" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#38bdf8" stop-opacity="0" />
+              <stop offset="0.35" stop-color="#38bdf8" stop-opacity="0.85" />
+              <stop offset="1" stop-color="#0e7490" stop-opacity="0.15" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M0 130c90-70 180-70 270 0s180 70 270 0 170-55 260-20"
+            fill="none"
+            stroke="url(#fade)"
+            stroke-width="2.5"
+          />
+          <path
+            d="M0 160c90-70 180-70 270 0s180 70 270 0 170-55 260-20"
+            fill="none"
+            stroke="url(#fade)"
+            stroke-width="1.5"
+            opacity="0.5"
+          />
+          <path
+            d="M0 100c90-70 180-70 270 0s180 70 270 0 170-55 260-20"
+            fill="none"
+            stroke="url(#fade)"
+            stroke-width="1"
+            opacity="0.3"
+          />
+        </svg>
+      </section>
+
+      <section class="shot-wrap" aria-labelledby="shot-title">
+        <figure class="shot">
+          <img
+            src="./assets/inventory-fixture.png"
+            alt="Die Programmliste von Wave Uninstaller: eine Tabelle mit Name, Herausgeber, Version, Größe und Installationsdatum, daneben eine Detailansicht des ausgewählten Programms."
+            width="1180"
+            height="800"
+            loading="lazy"
+          />
+          <figcaption id="shot-title">
+            Die Programmliste. Gerendert aus der Test-Fixture, nicht von einem echten System —
+            deshalb die erfundenen Einträge.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="funktionen" class="band">
+        <h2>Was Wave tut</h2>
+
+        <div class="cards">
+          <article class="card">
+            <h3>Findet, was installiert ist</h3>
+            <p>
+              Aus drei Quellen: den Registry-Uninstall-Schlüsseln, der MSI-Produktdatenbank und den
+              Store-Paketen. Alles, was in mehreren davon auftaucht, wird zu einer Zeile
+              zusammengeführt.
+            </p>
+            <p class="status done">Fertig</p>
+          </article>
+
+          <article class="card">
+            <h3>Räumt hinterher auf</h3>
+            <p>
+              Nach dem nativen Uninstaller sucht Wave nach dem, was übrig blieb: Ordner,
+              Registry-Schlüssel, Dienste, geplante Tasks, Autostart-Einträge, Verknüpfungen,
+              Prefetch-Dateien.
+            </p>
+            <p class="status planned">Geplant — P2</p>
+          </article>
+
+          <article class="card">
+            <h3>Macht es rückgängig</h3>
+            <p>
+              Jede Löschung wandert erst in ein Backup, jede Operation wird vorher in ein Journal
+              geschrieben. Auch ein Absturz mitten im Vorgang lässt sich zurückrollen.
+            </p>
+            <p class="status planned">Geplant — P3</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="sicherheit" class="band alt">
+        <h2>Warum man ihm trauen können soll</h2>
+        <p class="section-lede">
+          Ein Uninstaller, der einmal das falsche Verzeichnis erwischt, ist unbenutzbar. Zwei
+          Entscheidungen tragen deshalb den ganzen Entwurf.
+        </p>
+
+        <div class="split">
+          <article>
+            <h3>Löschen heißt verschieben</h3>
+            <p>
+              Nichts wird direkt entfernt. Dateien wandern unter Beibehaltung ihrer Pfadstruktur in
+              einen Backup-Ordner, Registry-Schlüssel werden als JSON und als importierbare
+              <code>.reg</code>-Datei gesichert, Dienste und Tasks als vollständige Konfiguration.
+            </p>
+            <p>
+              Nicht der Papierkorb: der kann keine Registry-Schlüssel, hat pro Laufwerk ein
+              Größenlimit und wird geleert, ohne nachzudenken.
+            </p>
+          </article>
+
+          <article>
+            <h3>Die Logik ist ohne Windows testbar</h3>
+            <p>
+              Der Kern ruft nie eine Windows-API auf. Er liest ausschließlich über ein Trait, für
+              das es zwei Implementierungen gibt: die echte, und eine, die einen erfundenen
+              Registry- und Dateisystem-Zustand aus JSON liest.
+            </p>
+            <p>
+              Damit läuft die Logik, die entscheidet, welche Dateien gelöscht werden dürfen, in
+              Millisekunden gegen eingefrorene Testfälle — statt manuell in einer VM. Ein
+              Uninstaller, dessen Entscheidungen man nur durch Ausprobieren prüfen kann, wird nie
+              vertrauenswürdig.
+            </p>
+          </article>
+        </div>
+
+        <div class="note">
+          <strong>Was Wave nicht anfasst:</strong> Windows-Verzeichnisse und <code>WinSxS</code>,
+          alles im Besitz von <code>TrustedInstaller</code>, geteilte Laufzeiten wie die
+          VC++-Redistributables, und jeden Pfad, der zum Installationsverzeichnis eines
+          <em>anderen</em> installierten Programms gehört. Diese Prüfung läuft vor der Bewertung,
+          nicht danach.
+        </div>
+      </section>
+
+      <section id="roadmap" class="band">
+        <h2>Wo das Projekt steht</h2>
+        <p class="section-lede">
+          Die Reihenfolge ist nicht verhandelbar: erzwungene Deinstallation ohne funktionierendes
+          Undo wäre ein Datenverlust-Feature.
+        </p>
+
+        <ol class="roadmap">
+          <li class="done">
+            <span class="phase">P0</span>
+            <div>
+              <h3>Inventar</h3>
+              <p>Registry, MSI und Store-Pakete lesen und als sortierbare Liste anzeigen.</p>
+            </div>
+            <span class="badge">fertig</span>
+          </li>
+          <li>
+            <span class="phase">P1</span>
+            <div>
+              <h3>Deinstallieren</h3>
+              <p>
+                Nativen Uninstaller starten, auf den gesamten Prozessbaum warten, offensichtliche
+                Reste entfernen.
+              </p>
+            </div>
+            <span class="badge next">als Nächstes</span>
+          </li>
+          <li>
+            <span class="phase">P2</span>
+            <div>
+              <h3>Der Scan</h3>
+              <p>Vollständige Suche, Bewertung jedes Fundes, harte Schutzliste.</p>
+            </div>
+            <span class="badge">offen</span>
+          </li>
+          <li>
+            <span class="phase">P3</span>
+            <div>
+              <h3>Undo</h3>
+              <p>Journal, Wiederherstellung, Systemwiederherstellungspunkte.</p>
+            </div>
+            <span class="badge">offen</span>
+          </li>
+          <li>
+            <span class="phase">P4</span>
+            <div>
+              <h3>Die Extras</h3>
+              <p>
+                Reste ohne Deinstallation finden, Autostart-Verwaltung, erzwungene Deinstallation
+                bei kaputtem Uninstaller.
+              </p>
+            </div>
+            <span class="badge">offen</span>
+          </li>
+          <li>
+            <span class="phase">P5</span>
+            <div>
+              <h3>Ausliefern</h3>
+              <p>Übersetzungen, Code-Signing, Installer, automatische Updates.</p>
+            </div>
+            <span class="badge">offen</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <a href="https://github.com/aquaxs1/Wave-uninstaller">Quellcode</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md">Plan</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/aquaxs1/Wave-uninstaller/issues">Probleme melden</a>
+      </p>
+      <p class="fineprint">
+        Kein fertiges Produkt. Wave liest zurzeit nur — deinstallieren und löschen kommen in
+        späteren Phasen.
+      </p>
+    </footer>
+  </body>
+</html>
