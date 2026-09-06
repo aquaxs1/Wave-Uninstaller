@@ -1,0 +1,48 @@
+name: Website
+
+# Veröffentlicht den Inhalt von site/ auf GitHub Pages.
+#
+# Damit das greift, muss in den Repository-Einstellungen unter
+# Settings → Pages die Quelle auf "GitHub Actions" stehen. Die Auswahl
+# "Deploy from a branch" kann nur / oder /docs bedienen und würde site/
+# nicht finden.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Eine laufende Veröffentlichung nicht abbrechen — halb hochgeladene
+# Seiten sind schlimmer als eine Minute Wartezeit.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Veröffentlichen
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/configure-pages@v5
+
+      # Statisches HTML, kein Build-Schritt: der Ordner wird so hochgeladen,
+      # wie er im Repository liegt.
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
