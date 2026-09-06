@@ -1,0 +1,20 @@
+# Rust
+/src-tauri/target/
+**/*.rs.bk
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build output / local secrets
+*.msi
+*.exe
+.env
+.env.local
