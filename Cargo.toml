@@ -6,6 +6,7 @@ members = ["crates/wave-core", "crates/wave-win32", "src-tauri"]
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.82"
+license = "MIT"
 repository = "https://github.com/aquaxs1/Wave-uninstaller"
 
 [workspace.dependencies]

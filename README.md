@@ -1,142 +1,136 @@
 <div align="center">
 
-<img src="./site/assets/favicon.svg" width="72" height="72" alt="">
+<img src="./site/assets/img/logo.svg" width="76" height="76" alt="">
 
 # Wave Uninstaller
 
-**Deinstallieren ist der einfache Teil. Der schwierige sind die Reste.**
+**Uninstalling is the easy part. The hard part is what stays behind.**
 
 [![CI](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/ci.yml/badge.svg)](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/ci.yml)
 [![Website](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/pages.yml/badge.svg)](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/pages.yml)
-[![Phase](https://img.shields.io/badge/Phase-P0%20von%205-38bdf8)](#wo-das-projekt-steht)
+[![Phase](https://img.shields.io/badge/phase-P0%20of%205-5a5a63)](#where-the-project-stands)
+[![License](https://img.shields.io/badge/license-MIT-5a5a63)](./LICENSE)
 
-[![Plattform](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)](#entwickeln)
+[![Platform](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)](#developing)
 [![Rust](https://img.shields.io/badge/Rust-1.82%2B-dea584?logo=rust&logoColor=white)](https://www.rust-lang.org)
 [![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?logo=tauri&logoColor=white)](https://v2.tauri.app)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 
-[![Letzter Commit](https://img.shields.io/github/last-commit/aquaxs1/Wave-uninstaller?label=letzter%20Commit&color=38bdf8)](https://github.com/aquaxs1/Wave-uninstaller/commits/main)
-[![Codegröße](https://img.shields.io/github/languages/code-size/aquaxs1/Wave-uninstaller?label=Code&color=38bdf8)](https://github.com/aquaxs1/Wave-uninstaller)
-[![Issues](https://img.shields.io/github/issues/aquaxs1/Wave-uninstaller?label=Issues&color=38bdf8)](https://github.com/aquaxs1/Wave-uninstaller/issues)
-[![Sterne](https://img.shields.io/github/stars/aquaxs1/Wave-uninstaller?label=Sterne&color=38bdf8)](https://github.com/aquaxs1/Wave-uninstaller/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/aquaxs1/Wave-uninstaller?label=last%20commit&color=5a5a63)](https://github.com/aquaxs1/Wave-uninstaller/commits/main)
+[![Code size](https://img.shields.io/github/languages/code-size/aquaxs1/Wave-uninstaller?label=code&color=5a5a63)](https://github.com/aquaxs1/Wave-uninstaller)
+[![Issues](https://img.shields.io/github/issues/aquaxs1/Wave-uninstaller?label=issues&color=5a5a63)](https://github.com/aquaxs1/Wave-uninstaller/issues)
+[![Stars](https://img.shields.io/github/stars/aquaxs1/Wave-uninstaller?label=stars&color=5a5a63)](https://github.com/aquaxs1/Wave-uninstaller/stargazers)
 
 </div>
 
 ---
 
-Ein Uninstaller für Windows, der nach dem regulären Deinstallieren aufräumt:
-verwaiste Registry-Schlüssel, zurückgelassene Ordner in `AppData` und
-`ProgramData`, Dienste, geplante Tasks, Autostart-Einträge, Verknüpfungen,
-Prefetch-Dateien.
+A Windows uninstaller that cleans up after the regular uninstall: orphaned
+registry keys, folders left in `AppData` and `ProgramData`, services, scheduled
+tasks, startup entries, shortcuts, prefetch files.
 
-Vorbild ist Revo Uninstaller — mit dem Unterschied, dass **jede** Löschung erst
-in ein Backup wandert und vollständig rückgängig gemacht werden kann.
+Revo Uninstaller is the model — with the difference that **every** deletion
+lands in a backup first and can be undone completely.
 
 > [!IMPORTANT]
-> **Phase P0 von 5.** Wave liest das Inventar und zeigt es an. Es deinstalliert
-> nichts und löscht nichts. Das kommt in P1 und P2 — bewusst erst, nachdem P3
-> ein funktionierendes Undo dafür gebaut hat.
+> **Phase P0 of 5.** Wave reads the inventory and shows it. It uninstalls
+> nothing and deletes nothing. That arrives in P1 and P2 — deliberately only
+> after P3 has built a working undo for it.
 
-![Die Programmliste von Wave Uninstaller](./site/assets/inventory-fixture.png)
+![Wave Uninstaller's program list](./site/assets/img/inventory.png)
 
-<sub>Gerendert aus <code>crates/wave-core/tests/fixtures/typical_machine.json</code>,
-nicht von einem echten System — daher die erfundenen Einträge.</sub>
+<sub>Rendered from <code>crates/wave-core/tests/fixtures/typical_machine.json</code>
+rather than a real machine, which is why the entries are invented.</sub>
 
-## Zahlen
+## Numbers
 
 | | |
 | --- | --- |
-| Crates | 3 — Kern, Windows-Layer, App |
-| Quellen fürs Inventar | 3 — Registry, MSI, Store-Pakete |
-| Tests | 20, laufen auf jedem Betriebssystem in Millisekunden |
-| CI-Jobs | 3 — Linux, Frontend, Windows |
-| Windows-Version | 10 (1809+) und 11, x64 und arm64 |
-| Phasen fertig | 1 von 6 |
+| Crates | 3 — core, Windows layer, app |
+| Inventory sources | 3 — registry, MSI, Store packages |
+| Tests | 20, running on any operating system in milliseconds |
+| CI jobs | 3 — Linux, frontend, Windows |
+| Windows version | 10 (1809+) and 11, x64 and arm64 |
+| Phases done | 1 of 6 |
 
-## Wo das Projekt steht
+## Where the project stands
 
-| Phase | | Inhalt |
+| Phase | | Content |
 | --- | --- | --- |
-| **P0** | ✅ | **Inventar** — Registry, MSI und Store-Pakete lesen und anzeigen |
-| **P1** | ▫️ | **Deinstallieren** — nativen Uninstaller starten, auf den Prozessbaum warten, offensichtliche Reste entfernen |
-| **P2** | ▫️ | **Der Scan** — vollständige Suche, Bewertung jedes Fundes, harte Schutzliste |
-| **P3** | ▫️ | **Undo** — Journal, Wiederherstellung, Systemwiederherstellungspunkte |
-| **P4** | ▫️ | **Die Extras** — Reste ohne Deinstallation finden, Autostart-Verwaltung, erzwungene Deinstallation |
-| **P5** | ▫️ | **Ausliefern** — Übersetzungen, Code-Signing, Installer, Updates |
+| **P0** | ✅ | **Inventory** — read the registry, MSI and Store packages and show them |
+| **P1** | ▫️ | **Uninstalling** — run the native uninstaller, wait for the process tree, remove the obvious leftovers |
+| **P2** | ▫️ | **The scan** — full search, a score for every finding, a hard protection list |
+| **P3** | ▫️ | **Undo** — journal, restore, system restore points |
+| **P4** | ▫️ | **The extras** — find leftovers with no uninstall, startup manager, forced uninstall |
+| **P5** | ▫️ | **Shipping** — translations, code signing, an installer, updates |
 
-Die Reihenfolge ist nicht verhandelbar: erzwungene Deinstallation ohne
-funktionierendes Undo wäre ein Datenverlust-Feature. Details in
-[`PLAN.md`](./PLAN.md).
+The order is not negotiable: forced uninstallation without a working undo would
+be a data-loss feature. Details in [`PLAN.md`](./PLAN.md).
 
-## Aufbau
+## Layout
 
 ```
-crates/wave-core    Was ist installiert, was gehört zusammen — kennt kein Windows
-crates/wave-win32   Registry, MSI, MSIX — kennt keine Entscheidungen
-src-tauri           Tauri-Shell und die Commands, die die UI aufruft
+crates/wave-core    What is installed and what belongs together — knows no Windows
+crates/wave-win32   Registry, MSI, MSIX — makes no decisions
+src-tauri           The Tauri shell and the commands the interface calls
 src                 React + TypeScript + Tailwind
-site                Die Projektseite (statisch, ohne Build)
+site                The project website (static, no build step)
 ```
 
-Der Kern greift nie direkt auf Win32 zu, sondern nur über das Trait
-`SystemProvider`. Davon gibt es zwei Implementierungen: die echte in
-`wave-win32` und eine, die einen erfundenen Registry- und Dateisystem-Zustand
-aus JSON liest.
+The core never touches Win32 directly, only the `SystemProvider` trait. That
+has two implementations: the real one in `wave-win32`, and one that reads an
+invented registry and file system state from JSON.
 
-Das ist keine Architektur-Kosmetik. Die Logik, die entscheidet, welche Dateien
-gelöscht werden dürfen, muss testbar sein — deterministisch, in Sekunden, ohne
-VM. Ein Uninstaller, dessen Entscheidungen man nur durch Ausprobieren prüfen
-kann, wird nie vertrauenswürdig.
+This is not architectural decoration. The logic that decides which files may be
+deleted has to be testable — deterministically, in seconds, without a VM. An
+uninstaller whose decisions can only be checked by trying them will never be
+trustworthy.
 
-Die Regeln, die daraus folgen, stehen in [`CLAUDE.md`](./CLAUDE.md).
+The rules that follow from it are in [`CLAUDE.md`](./CLAUDE.md).
 
-## Entwickeln
+## Developing
 
-Voraussetzungen: Rust (stable, ≥ 1.82), Node 22, und für die App die
-[Tauri-Systemabhängigkeiten](https://v2.tauri.app/start/prerequisites/).
+Prerequisites: Rust (stable, ≥ 1.82), Node 22, and for the app the
+[Tauri system dependencies](https://v2.tauri.app/start/prerequisites/).
 
 ```bash
 npm install
-npm run tauri dev      # die App (nur unter Windows sinnvoll)
+npm run tauri dev      # the app (only meaningful on Windows)
 ```
 
-Kern testen — geht auf jedem Betriebssystem:
+Test the core — works on any operating system:
 
 ```bash
 cargo test -p wave-core
 ```
 
-Den Windows-Layer prüfen, ohne Windows zu haben:
+Check the Windows layer without having Windows:
 
 ```bash
 rustup target add x86_64-pc-windows-msvc
 cargo clippy -p wave-win32 --target x86_64-pc-windows-msvc -- -D warnings
 ```
 
-Das findet Fehler in den Win32-Aufrufen, weil gegen die echten Bindings
-typgeprüft wird — in Sekunden statt in zwölf Minuten auf dem Windows-Runner.
-Nur das Linken braucht einen Windows-Host.
+That catches mistakes in the Win32 calls because it type-checks against the
+real bindings — in seconds rather than twelve minutes on the Windows runner.
+Only linking needs a Windows host.
 
-Sehen, was eine Fixture ergibt:
+See what a fixture produces:
 
 ```bash
 cargo run -p wave-core --example dump-inventory -- \
   crates/wave-core/tests/fixtures/typical_machine.json
 ```
 
-Unter Linux baut nur der Kern. `wave-app` braucht eine WebView und
-`wave-win32` ist vollständig `#[cfg(windows)]` — beides deckt der Windows-Job
-in CI ab.
+On Linux only the core builds. `wave-app` needs a WebView and `wave-win32` is
+entirely `#[cfg(windows)]` — the Windows job in CI covers both.
 
 ## Website
 
-Die Projektseite liegt in [`site/`](./site) als statisches HTML ohne
-Build-Schritt und wird von
-[`.github/workflows/pages.yml`](./.github/workflows/pages.yml) auf GitHub Pages
-veröffentlicht. Wie man sie lokal ansieht oder woanders ausliefert, steht in
-[`site/README.md`](./site/README.md).
+The project site lives in [`site/`](./site) as static HTML with no build step.
+Deploy it by pointing a host's root directory at `site`; details, including the
+GitHub Pages workflow, are in [`site/README.md`](./site/README.md).
 
-## Lizenz
+## License
 
-Noch nicht festgelegt — damit gilt vorerst das gesetzliche Urheberrecht, also
-keine Nutzungsrechte für Dritte.
+MIT — see [`LICENSE`](./LICENSE).

@@ -1,11 +1,12 @@
 name: Website
 
-# Veröffentlicht den Inhalt von site/ auf GitHub Pages.
+# Publishes the contents of site/ on GitHub Pages.
 #
-# Damit das greift, muss in den Repository-Einstellungen unter
-# Settings → Pages die Quelle auf "GitHub Actions" stehen. Die Auswahl
-# "Deploy from a branch" kann nur / oder /docs bedienen und würde site/
-# nicht finden.
+# For this to take effect, Settings -> Pages in the repository must have the
+# source set to "GitHub Actions". The alternative, "deploy from a branch", can
+# only serve / or /docs and would never find site/.
+#
+# Pages is a mirror; Vercel is the canonical host (see site/README.md).
 
 on:
   push:
@@ -20,15 +21,15 @@ permissions:
   pages: write
   id-token: write
 
-# Eine laufende Veröffentlichung nicht abbrechen — halb hochgeladene
-# Seiten sind schlimmer als eine Minute Wartezeit.
+# Do not cancel a publish in flight: a half-uploaded site is worse than a
+# minute of waiting.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Veröffentlichen
+    name: Publish
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -38,8 +39,8 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
-      # Statisches HTML, kein Build-Schritt: der Ordner wird so hochgeladen,
-      # wie er im Repository liegt.
+      # Static HTML, no build step: the folder is uploaded exactly as it sits
+      # in the repository.
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site

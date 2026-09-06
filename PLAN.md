@@ -1,395 +1,394 @@
-# Wave Uninstaller — Technischer Plan
+# Wave Uninstaller — technical plan
 
-Ein Windows-Uninstaller, der nach dem regulären Deinstallieren die Reste findet
-und entfernt: verwaiste Registry-Schlüssel, zurückgelassene Ordner, Dienste,
-geplante Tasks, Autostart-Einträge, Verknüpfungen, Prefetch-Dateien.
+A Windows uninstaller that finds and removes what is left behind after the
+regular uninstall: orphaned registry keys, abandoned folders, services,
+scheduled tasks, startup entries, shortcuts, prefetch files.
 
-Leitprinzip: **Nichts wird gelöscht, nur verschoben.** Jede Operation landet
-zuerst in einem Backup und ist über ein Journal vollständig umkehrbar. Ein
-Uninstaller, der einmal das falsche Verzeichnis erwischt, ist unbenutzbar —
-also wird Sicherheit vor Gründlichkeit priorisiert.
+Guiding principle: **nothing is deleted, only moved.** Every operation lands in
+a backup first and is fully reversible through a journal. An uninstaller that
+catches the wrong directory once is unusable — so safety comes before
+thoroughness.
 
-- **Stack:** Tauri 2, Rust-Kern (`windows`-Crate), React + TypeScript + Tailwind
-- **Ziel:** Windows 10 (1809+) und 11, x64 + arm64
-- **Scope v1:** Leftover-Scanner und Cleaner. **Kein** Installations-Monitoring
-  per Filtertreiber (siehe [Bewusst nicht in v1](#bewusst-nicht-in-v1)).
+- **Stack:** Tauri 2, Rust core (`windows` crate), React + TypeScript + Tailwind
+- **Target:** Windows 10 (1809+) and 11, x64 + arm64
+- **Scope for v1:** leftover scanner and cleaner. **No** install monitoring via
+  a filter driver (see [Deliberately not in v1](#deliberately-not-in-v1)).
 
 ---
 
-## 1. Architektur
+## 1. Architecture
 
 ```
 ┌──────────────────────────────────────────────┐
 │  UI  —  React + TS + Tailwind (Vite)         │
-│  Programmliste · Scan-Wizard · Backups       │
+│  Program list · scan wizard · backups        │
 └───────────────────┬──────────────────────────┘
-                    │  Tauri Commands + Events (Progress-Streams)
+                    │  Tauri commands + events (progress streams)
 ┌───────────────────┴──────────────────────────┐
-│  wave-core  (Rust, plattformunabhängige Logik)│
-│  ├─ inventory   Was ist installiert?          │
-│  ├─ scan        Was gehört dazu?              │
-│  ├─ score       Wie sicher ist das?           │
-│  ├─ plan        Was passiert konkret?         │
-│  └─ apply       Backup → Ausführung → Journal │
+│  wave-core  (Rust, platform-independent)     │
+│  ├─ inventory   What is installed?           │
+│  ├─ scan        What belongs to it?          │
+│  ├─ score       How safe is this?            │
+│  ├─ plan        What exactly will happen?    │
+│  └─ apply       Backup → execute → journal   │
 └───────────────────┬──────────────────────────┘
                     │  trait SystemProvider
 ┌───────────────────┴──────────────────────────┐
-│  wave-win32  (Rust, echte Windows-Aufrufe)    │
-│  Registry · MSI · SCM · Task Scheduler · FS   │
+│  wave-win32  (Rust, the real Windows calls)  │
+│  Registry · MSI · SCM · Task Scheduler · FS  │
 └──────────────────────────────────────────────┘
 ```
 
-Der entscheidende Schnitt ist `trait SystemProvider`. `wave-core` ruft nie
-direkt Win32 auf, sondern geht über dieses Trait. Damit gibt es zwei
-Implementierungen:
+The decisive cut is `trait SystemProvider`. `wave-core` never calls Win32
+directly; it goes through that trait. Which gives two implementations:
 
-- `Win32Provider` — die echte, in `wave-win32`
-- `FixtureProvider` — liest einen erfundenen Registry-/Dateisystem-Zustand aus
-  einer JSON-Datei
+- `Win32Provider` — the real one, in `wave-win32`
+- `FixtureProvider` — reads an invented registry and file system state from a
+  JSON file
 
-Nur so lässt sich die Scan- und Scoring-Logik überhaupt testen: in CI auf
-Linux, deterministisch, ohne VM, ohne echte Installation. Das ist keine
-Architektur-Kosmetik — ohne diesen Schnitt ist jeder Test des Kerns ein
-manueller Klick in einer VM.
+Without it the scan and scoring logic could not be tested at all: in CI, on
+Linux, deterministically, with no VM and no real installation. This is not
+architectural decoration — without that cut, every test of the core is a manual
+click in a virtual machine.
 
 ### Crates
 
-| Crate | Zweck |
+| Crate | Purpose |
 |---|---|
-| `windows` | Win32, COM, WinRT — Registry, MSI, SCM, Task Scheduler, Restart Manager |
-| `tauri` 2 | Shell, IPC, Updater |
-| `serde` / `serde_json` | Modelle, Journal, Fixtures |
-| `jwalk` | paralleler Verzeichnis-Walk |
-| `rayon` | Parallelisierung des Scorings |
-| `strsim` | Fuzzy-Namensvergleich (Jaro-Winkler) |
-| `rusqlite` | Scan-Cache und Backup-Index |
-| `zip` | Backup-Archive |
-| `tracing` + `tracing-appender` | strukturierte Logs auf Platte |
-| `thiserror` | Fehlertypen |
+| `windows` | Win32, COM, WinRT — registry, MSI, SCM, task scheduler, restart manager |
+| `tauri` 2 | Shell, IPC, updater |
+| `serde` / `serde_json` | Models, journal, fixtures |
+| `jwalk` | Parallel directory walk |
+| `rayon` | Parallel scoring |
+| `strsim` | Fuzzy name comparison (Jaro-Winkler) |
+| `rusqlite` | Scan cache and backup index |
+| `zip` | Backup archives |
+| `tracing` + `tracing-appender` | Structured logs on disk |
+| `thiserror` | Error types |
 
-### Rechte
+### Privileges
 
-v1 läuft komplett elevated (`requireAdministrator` im Manifest). Das ist
-ehrlicher als ein UAC-Prompt mitten im Löschvorgang.
+v1 runs fully elevated (`requireAdministrator` in the manifest). That is more
+honest than a UAC prompt in the middle of a deletion.
 
-Ab v2 Split: die GUI läuft unprivilegiert, ein Helper-Prozess
-`wave-elevated.exe` macht alle Schreibzugriffe und wird über eine Named Pipe
-mit per-Session-Token angesprochen. Das reduziert die Angriffsfläche
-erheblich, ist aber für einen ersten funktionierenden Stand unnötiger Aufwand.
+From v2 on, a split: the UI runs unprivileged and a helper process,
+`wave-elevated.exe`, performs every write, addressed over a named pipe with a
+per-session token. That cuts the attack surface considerably, but it is
+needless work for a first version that runs at all.
 
-Wichtig ab Tag 1, weil später schwer nachzurüsten: **jeder** Registry-Zugriff
-muss beide Sichten abfragen, `KEY_WOW64_64KEY` und `KEY_WOW64_32KEY`. Ein
-32-Bit-Programm auf einem 64-Bit-System liegt unter `WOW6432Node`, und wer das
-vergisst, findet die Hälfte der Reste nicht.
+One thing matters from day one because it is hard to retrofit: **every**
+registry read must query both views, `KEY_WOW64_64KEY` and `KEY_WOW64_32KEY`. A
+32-bit program on a 64-bit system lives under `WOW6432Node`, and anyone who
+forgets that misses half the leftovers.
 
 ---
 
-## 2. Inventar — was ist überhaupt installiert?
+## 2. Inventory — what is actually installed?
 
-Vier Quellen, die zusammengeführt werden:
+Four sources, merged:
 
-**Registry-Uninstall-Keys** — die klassische Liste, die auch
-"Apps & Features" zeigt:
+**Registry uninstall keys** — the classic list, the same one Apps & Features
+shows:
+
 - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall`
 - `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall`
 - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall`
 
-Relevante Werte: `DisplayName`, `DisplayVersion`, `Publisher`,
+Relevant values: `DisplayName`, `DisplayVersion`, `Publisher`,
 `InstallLocation`, `InstallDate`, `UninstallString`, `QuietUninstallString`,
-`EstimatedSize`, `SystemComponent` (=1 → ausblenden), `ParentKeyName`
-(→ Updates unter das Hauptprodukt gruppieren).
+`EstimatedSize`, `SystemComponent` (=1 → hide), `ParentKeyName` (→ group
+updates under the parent product).
 
-**MSI-Datenbank** — `MsiEnumProducts` / `MsiGetProductInfo`. Der wertvolle
-Teil ist `MsiEnumComponents` + `MsiGetComponentPath`: Windows weiß bei
-MSI-Installationen **exakt**, welche Datei zu welchem Produkt gehört. Das ist
-keine Heuristik, das ist die Wahrheit. Diese Zuordnung bekommt im Scoring das
-höchste Gewicht und ist gleichzeitig der Schutz davor, Dateien zu löschen, die
-einem *anderen* Produkt gehören.
+**The MSI database** — `MsiEnumProducts` / `MsiGetProductInfo`. The valuable
+part is `MsiEnumComponents` + `MsiGetComponentPath`: for MSI installations
+Windows knows **exactly** which file belongs to which product. That is not a
+heuristic, it is the truth. This mapping carries the highest weight in scoring
+and is at the same time the protection against deleting files that belong to
+*another* product.
 
-**Store-/UWP-Apps** — `Windows.Management.Deployment.PackageManager` über
-WinRT. Diese Apps deinstallieren sich sauber; Reste bleiben aber unter
-`%LOCALAPPDATA%\Packages\<PackageFamilyName>` liegen, wenn der Nutzer die App
-mal zurückgesetzt hat.
+**Store / UWP apps** — `Windows.Management.Deployment.PackageManager` over
+WinRT. These apps uninstall cleanly, but leftovers stay under
+`%LOCALAPPDATA%\Packages\<PackageFamilyName>` when a user has reset the app at
+some point.
 
-**Portable Programme** — stehen in keiner Registry. v1 zeigt sie nicht in der
-Hauptliste, aber der "Junk-Hunter" (Phase 4) findet ihre Reste.
+**Portable programs** — in no registry at all. v1 does not show them in the
+main list, but the junk hunter (phase 4) finds their leftovers.
 
-Deduplizierung über `(ProductCode | DisplayName+Publisher+Version)`. Ein
-MSI-Produkt taucht typischerweise in Registry *und* MSI-Enumeration auf.
+Deduplication by `(ProductCode | DisplayName+Publisher+Version)`. An MSI
+product typically appears in both the registry *and* the MSI enumeration.
 
 ---
 
-## 3. Deinstallations-Ablauf
+## 3. The uninstall sequence
 
 ```
- 1. Snapshot (optional, Standard: an)
-      Registry-Teilbäume + Datei-Index der Kandidatenpfade
- 2. Nativen Uninstaller starten
+ 1. Snapshot (optional, on by default)
+      Registry subtrees + a file index of the candidate paths
+ 2. Start the native uninstaller
       MSI:  msiexec /x {GUID} /passive /norestart
-      EXE:  QuietUninstallString, sonst UninstallString
- 3. Auf Prozessbaum warten
-      Job Object, nicht nur auf die PID — NSIS/Inno starten Kindprozesse
-      und beenden sich sofort selbst
- 4. Scan: Snapshot-Diff + Heuristik
- 5. Ergebnis in drei Töpfen zeigen
- 6. Backup schreiben, dann anwenden
+      EXE:  QuietUninstallString, else UninstallString
+ 3. Wait for the process tree
+      A job object, not just the PID — NSIS and Inno start child
+      processes and terminate themselves immediately
+ 4. Scan: snapshot diff + heuristics
+ 5. Present the result in three buckets
+ 6. Write the backup, then apply
 ```
 
-Zu Schritt 3 im Detail, weil hier fast jeder selbstgebaute Uninstaller
-scheitert: NSIS kopiert sich nach `%TEMP%` und startet sich dort neu, Inno
-Setup macht dasselbe mit `_iu*.tmp`, MSI delegiert an den `msiserver`-Dienst.
-Wer nur auf die ursprüngliche PID wartet, scannt los, während der Uninstaller
-noch läuft, und findet Dateien, die zwei Sekunden später von selbst
-verschwinden. Lösung: Prozess in ein Job Object stecken und auf
-`JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO` warten, mit Timeout und einem
-"Uninstaller läuft noch"-Hinweis in der UI.
+On step 3 in detail, because this is where nearly every home-grown uninstaller
+fails: NSIS copies itself to `%TEMP%` and restarts there, Inno Setup does the
+same with `_iu*.tmp`, MSI delegates to the `msiserver` service. Wait only on
+the original PID and the scan starts while the uninstaller is still running,
+finding files that disappear on their own two seconds later. The fix: put the
+process into a job object and wait for
+`JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO`, with a timeout and an "uninstaller still
+running" hint in the UI.
 
-Der Snapshot in Schritt 1 ist bewusst optional: er kostet bei einem breiten
-Datei-Index Zeit, und die Heuristik allein findet schon das meiste. Der Diff
-liefert aber die Fälle, die keine Heuristik findet — Registry-Werte mit
-kryptischen GUID-Namen etwa.
+The snapshot in step 1 is optional on purpose: a broad file index costs time,
+and the heuristics alone already find most of it. But the diff catches the
+cases no heuristic can — registry values with cryptic GUID names, for one.
 
 ---
 
-## 4. Wo Reste liegen
+## 4. Where leftovers live
 
-### Dateisystem
+### File system
 
-| Ort | Was |
+| Location | What |
 |---|---|
-| `%ProgramFiles%`, `%ProgramFiles(x86)%` | Restordner, leere Vendor-Ordner |
-| `%ProgramData%` | Konfiguration, Lizenzen, Logs |
-| `%LOCALAPPDATA%`, `%APPDATA%` | Profile, Caches, Einstellungen |
-| `%LOCALAPPDATA%\Temp`, `%SystemRoot%\Temp` | Installer-Reste |
-| `%LOCALAPPDATA%\Packages` | UWP-Container |
-| `%ProgramData%\Package Cache` | von MSI zwischengespeicherte Installer |
-| `C:\Windows\Installer` | verwaiste `.msi`/`.msp` — **nur** anzeigen, siehe unten |
-| `C:\Windows\Prefetch` | `PROGRAMM.EXE-<HASH>.pf` |
-| Startmenü (User + All Users) | Verknüpfungen |
-| Desktop, Quick Launch | Verknüpfungen |
-| `%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations` | Jump Lists |
-| `%USERPROFILE%\Documents` | **nur mit expliziter Zustimmung** — hier liegen Nutzerdaten |
+| `%ProgramFiles%`, `%ProgramFiles(x86)%` | Leftover folders, empty vendor folders |
+| `%ProgramData%` | Configuration, licences, logs |
+| `%LOCALAPPDATA%`, `%APPDATA%` | Profiles, caches, settings |
+| `%LOCALAPPDATA%\Temp`, `%SystemRoot%\Temp` | Installer remains |
+| `%LOCALAPPDATA%\Packages` | UWP containers |
+| `%ProgramData%\Package Cache` | Installers cached by MSI |
+| `C:\Windows\Installer` | Orphaned `.msi`/`.msp` — **display only**, see below |
+| `C:\Windows\Prefetch` | `PROGRAM.EXE-<HASH>.pf` |
+| Start menu (user + all users) | Shortcuts |
+| Desktop, Quick Launch | Shortcuts |
+| `%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations` | Jump lists |
+| `%USERPROFILE%\Documents` | **Only with explicit consent** — this is user data |
 
-`C:\Windows\Installer` ist eine Falle. Dateien dort sehen verwaist aus, werden
-aber für Reparatur und Deinstallation *anderer* Produkte gebraucht. Wave zeigt
-Funde dort an, wählt sie nie vor und schreibt eine Warnung dazu.
+`C:\Windows\Installer` is a trap. Files there look orphaned but are needed to
+repair and uninstall *other* products. Wave shows findings there, never
+preselects them, and attaches a warning.
 
 ### Registry
 
 - `HKCU\Software\<Vendor>`, `HKLM\SOFTWARE\<Vendor>` (+ `WOW6432Node`)
-- Uninstall-Key des Produkts selbst
+- The product's own uninstall key
 - `...\CurrentVersion\App Paths\<exe>`
 - `...\Installer\Folders`, `Installer\Products`, `Features`, `Components`, `UpgradeCodes`
-- `...\CurrentVersion\SharedDLLs` — Refcounts, siehe Schutzliste
-- `HKCU\...\Explorer\FileExts\<.ext>` — Dateizuordnungen
+- `...\CurrentVersion\SharedDLLs` — refcounts, see the protection list
+- `HKCU\...\Explorer\FileExts\<.ext>` — file associations
 - `HKCR` / `HKLM\SOFTWARE\Classes`: ProgIDs, `CLSID`, `TypeLib`, `Interface`
-- Shell-Erweiterungen: `ContextMenuHandlers`, `ShellIconOverlayIdentifiers`
-- Autostart: `Run`, `RunOnce` (HKLM + HKCU, beide Bitness), `StartupApproved`
-- `HKLM\SYSTEM\CurrentControlSet\Services` — Dienste und Treiber
-- Firewall-Regeln unter `...\SharedAccess\Parameters\FirewallPolicy\FirewallRules`
-- Event-Log-Quellen, `Image File Execution Options`, `AppInit_DLLs`
-- `MuiCache`, MRU-Listen
+- Shell extensions: `ContextMenuHandlers`, `ShellIconOverlayIdentifiers`
+- Startup: `Run`, `RunOnce` (HKLM + HKCU, both bitnesses), `StartupApproved`
+- `HKLM\SYSTEM\CurrentControlSet\Services` — services and drivers
+- Firewall rules under `...\SharedAccess\Parameters\FirewallPolicy\FirewallRules`
+- Event log sources, `Image File Execution Options`, `AppInit_DLLs`
+- `MuiCache`, MRU lists
 
-### Systemobjekte
+### System objects
 
-- **Dienste** über SCM enumerieren, `ImagePath` gegen das Installationsverzeichnis prüfen
-- **Geplante Tasks** über `ITaskService` (nicht die XML-Dateien direkt parsen)
-- **Fonts**, die der Installer registriert hat
-- **Browser-Erweiterungen** — nur melden, nie automatisch löschen
+- **Services** enumerated through the SCM, checking `ImagePath` against the
+  install directory
+- **Scheduled tasks** through `ITaskService` (not by parsing the XML files
+  directly)
+- **Fonts** the installer registered
+- **Browser extensions** — reported only, never deleted automatically
 
-`WinSxS` wird niemals angefasst. Punkt.
+`WinSxS` is never touched. Full stop.
 
 ---
 
-## 5. Scoring — das eigentliche Herzstück
+## 5. Scoring — the actual heart of it
 
-Jeder Fund bekommt eine Punktzahl aus gewichteten Signalen:
+Every finding gets a score from weighted signals:
 
-| Signal | Gewicht | Anmerkung |
+| Signal | Weight | Note |
 |---|---|---|
-| MSI-Komponente gehört diesem Produkt | sehr hoch | autoritativ, keine Heuristik |
-| Pfad liegt unter `InstallLocation` | hoch | |
-| Registry-Wert enthält den Installationspfad | hoch | |
-| PE-Versionsinfo (`CompanyName`/`ProductName`) passt | mittel-hoch | aus den Ressourcen der gefundenen EXE/DLL |
-| Authenticode-Signierer passt zum Publisher | mittel-hoch | |
-| Vendor-Name im Pfad | mittel | normalisiert: `Inc`, `GmbH`, `LLC`, Satzzeichen weg, case-fold |
-| Produktname als Token im Pfad | mittel | Jaro-Winkler auf Token-Ebene |
-| Zeitstempel im Installationsfenster | niedrig | Zusatzindiz, nie allein tragend |
+| MSI component belongs to this product | very high | Authoritative, not a heuristic |
+| Path sits under `InstallLocation` | high | |
+| Registry value contains the install path | high | |
+| PE version info (`CompanyName`/`ProductName`) matches | medium-high | From the resources of any EXE/DLL found |
+| Authenticode signer matches the publisher | medium-high | |
+| Vendor name in the path | medium | Normalized: `Inc`, `GmbH`, `LLC`, punctuation removed, case-folded |
+| Product name as a token in the path | medium | Jaro-Winkler at token level |
+| Timestamp inside the install window | low | Corroboration, never load-bearing alone |
 
-Daraus drei Töpfe:
+Which produces three buckets:
 
-- **≥ 85 — Sicher.** Vorausgewählt.
-- **50–84 — Prüfen.** Angezeigt, nicht vorausgewählt.
-- **< 50 — Unsicher.** Erst nach Klick auf "Alle anzeigen" sichtbar.
+- **≥ 85 — safe.** Preselected.
+- **50–84 — review.** Shown, not preselected.
+- **< 50 — unsure.** Visible only after clicking "show everything".
 
-Jeder Fund trägt seine Begründung mit ("Pfad unter InstallLocation; Signierer
-= Publisher"). Ohne diese Erklärung kann ein Nutzer die Auswahl nicht
-beurteilen, und dann klickt er entweder blind auf Löschen oder gar nicht.
+Every finding carries its reasoning ("path under InstallLocation; signer =
+publisher"). Without that explanation a user cannot judge the selection, and
+then they either click delete blindly or never at all.
 
-### Schutzliste — hart, vor dem Scoring
+### The protection list — hard, and before scoring
 
-Was hier greift, wird gar nicht erst zum Fund, egal wie hoch der Score wäre:
+Anything caught here never becomes a finding, no matter how high it would have
+scored:
 
-- Windows-Verzeichnisse, `System32`, `SysWOW64`, `WinSxS`, `drivers`
-- Alles, dessen Besitzer `TrustedInstaller` ist
-- Pfade, die die `InstallLocation` eines **anderen** installierten Produkts
-  sind oder darunter liegen — dafür liegt das komplette Inventar im Speicher
-- Geteilte Laufzeiten: VC++ Redistributables, .NET, DirectX, Java
-- `SharedDLLs` mit Refcount > 1
-- Nutzerdaten-Verzeichnisse ohne explizites Opt-in
+- Windows directories, `System32`, `SysWOW64`, `WinSxS`, `drivers`
+- Anything owned by `TrustedInstaller`
+- Paths that are, or sit under, the `InstallLocation` of **another** installed
+  product — which is why the complete inventory is held in memory
+- Shared runtimes: VC++ redistributables, .NET, DirectX, Java
+- `SharedDLLs` with a refcount > 1
+- User data directories without an explicit opt-in
 
-Diese Liste ist der Grund, warum das Inventar vollständig sein muss, bevor der
-erste Scan läuft. Ein Fund ist nur dann ein Rest, wenn ihn niemand sonst
-beansprucht.
-
----
-
-## 6. Backup und Undo
-
-Löschen heißt in Wave: verschieben.
-
-- **Dateien** → `%ProgramData%\Wave\Backups\<opId>\` unter Beibehaltung der
-  relativen Pfadstruktur, inklusive ACLs und Zeitstempeln
-- **Registry** → strukturiertes JSON (Typ, Daten, Zeitstempel) plus eine
-  `.reg`-Datei zum manuellen Import, falls Wave selbst mal kaputt ist
-- **Dienste / Tasks** → vollständige Konfiguration als JSON, damit sie
-  neu angelegt werden können
-- **Journal** → append-only JSONL, geschrieben *vor* jeder einzelnen Aktion.
-  Stürzt Wave mitten in einer Operation ab, erkennt der nächste Start die
-  offene Transaktion und bietet Rollback an.
-- **Systemwiederherstellungspunkt** vor riskanten Operationen, abschaltbar
-- **Aufbewahrung** konfigurierbar (Standard: 30 Tage / 5 GB), danach echtes
-  Löschen
-
-Der Backup-Ordner liegt bewusst nicht im Papierkorb: der Papierkorb kann keine
-Registry-Schlüssel, hat pro Laufwerk ein Größenlimit und wird von Nutzern
-geleert, ohne nachzudenken.
+This list is why the inventory has to be complete before the first scan runs. A
+finding is only a leftover if nobody else claims it.
 
 ---
 
-## 7. Löschmechanik
+## 6. Backup and undo
 
-Was in der Praxis schiefgeht, und was Wave dagegen tut:
+In Wave, deleting means moving.
 
-- **Datei gesperrt** → Restart-Manager-API (`RmStartSession`,
-  `RmRegisterResources`, `RmGetList`) sagt, *welcher* Prozess sperrt. Die UI
-  zeigt "Spotify hält diese Datei" statt "Zugriff verweigert" und bietet an,
-  den Prozess zu beenden.
-- **Immer noch gesperrt** → `MoveFileEx` mit `MOVEFILE_DELAY_UNTIL_REBOOT`,
-  plus Hinweis, dass ein Neustart nötig ist
-- **Pfade > 260 Zeichen** → `\\?\`-Präfix und `longPathAware` im Manifest.
-  Betrifft in der Praxis vor allem `node_modules` in Entwickler-Tools.
-- **Junctions und Symlinks** → nie hineinlaufen, nur den Link entfernen.
-  Sonst löscht ein Reparse Point in `AppData` das halbe Profil.
-- **Keine Berechtigung** → optionales Übernehmen der Besitzrechte
-  (`SeTakeOwnershipPrivilege`) hinter einer separaten Bestätigung
-- **Sicheres Löschen** (Überschreiben) als Option, standardmäßig aus
+- **Files** → `%ProgramData%\Wave\Backups\<opId>\`, keeping their relative path
+  structure, including ACLs and timestamps
+- **Registry** → structured JSON (type, data, timestamp) plus a `.reg` file for
+  manual import, in case Wave itself is broken
+- **Services / tasks** → the full configuration as JSON, so they can be
+  recreated
+- **Journal** → append-only JSONL, written *before* every individual action. If
+  Wave crashes mid-operation, the next start detects the open transaction and
+  offers a rollback.
+- **System restore point** before risky operations, switchable
+- **Retention** configurable (default: 30 days / 5 GB), then a real delete
 
----
-
-## 8. UI
-
-React + TypeScript + Tailwind, Vite als Bundler.
-
-- **Programme** — Liste mit Suche, Sortierung nach Größe / Datum / Publisher,
-  Icon aus der EXE extrahiert
-- **Detail** — alles, was das Inventar über das Programm weiß
-- **Deinstallieren** — Wizard: Snapshot → Uninstaller → Scan → Auswahl
-- **Funde** — Baum mit Tri-State-Checkboxen, Risiko-Badge und Begründung pro
-  Zeile, Gruppierung nach Kategorie (Dateien / Registry / Dienste / …)
-- **Backups** — Verlauf, Wiederherstellen, Aufräumen
-- **Einstellungen** — Scan-Tiefe, Wiederherstellungspunkte, Aufbewahrung, Sprache
-- **Logs** — was Wave getan hat, im Klartext
-
-Fortschritt kommt über Tauri-Events als Stream, nicht als ein einzelner
-Command, der zwei Minuten blockiert.
-
-Beim ersten Start ist der **Trockenlauf** aktiv: Wave zeigt, was es tun würde,
-löscht aber nichts. Muss einmal bewusst abgeschaltet werden.
+The backup folder deliberately is not the recycle bin: the bin cannot hold
+registry keys, has a per-drive size limit, and gets emptied by users without a
+second thought.
 
 ---
 
-## 9. Testen
+## 7. Deletion mechanics
 
-Ohne die `SystemProvider`-Abstraktion aus Abschnitt 1 wäre das hier nicht
-möglich:
+What goes wrong in practice, and what Wave does about it:
 
-- **Unit-Tests** gegen `FixtureProvider` — ein erfundener Registry- und
-  Dateisystem-Zustand als JSON, erwartete Funde als Golden File. Läuft auf
-  Linux in CI, in Sekunden.
-- **Integrationstests** auf `windows-latest` in GitHub Actions: echte
-  Registry-Lese-Operationen gegen einen Testschlüssel unter `HKCU`, MSI-Enum,
-  Datei-Walk in einem Temp-Verzeichnis.
-- **Manuelle Matrix** in Windows Sandbox / Hyper-V mit Prüfpunkten, weil eine
-  echte Deinstallation sich nicht sinnvoll mocken lässt. Mindestens: ein
-  MSI-Programm (7-Zip), ein NSIS-Programm (Notepad++), ein Inno-Setup-Programm,
-  eine Squirrel-App (Discord), eine UWP-App, ein 32-Bit-Programm auf 64-Bit.
-- **Regressionsschutz:** jeder Fehlfund, der in der Praxis auftaucht, wird als
-  Fixture eingefroren.
+- **File locked** → the restart manager API (`RmStartSession`,
+  `RmRegisterResources`, `RmGetList`) says *which* process holds it. The UI
+  shows "Spotify is holding this file" instead of "access denied", and offers
+  to close it.
+- **Still locked** → `MoveFileEx` with `MOVEFILE_DELAY_UNTIL_REBOOT`, plus a
+  note that a restart is needed
+- **Paths over 260 characters** → the `\\?\` prefix and `longPathAware` in the
+  manifest. In practice this is mostly `node_modules` inside developer tools.
+- **Junctions and symlinks** → never walk into them, remove only the link.
+  Otherwise a reparse point in `AppData` deletes half the profile.
+- **No permission** → optionally take ownership
+  (`SeTakeOwnershipPrivilege`) behind a separate confirmation
+- **Secure delete** (overwriting) as an option, off by default
+
+---
+
+## 8. The interface
+
+React + TypeScript + Tailwind, Vite as the bundler.
+
+- **Programs** — a list with search, sorting by size / date / publisher, icon
+  extracted from the EXE
+- **Detail** — everything the inventory knows about the program
+- **Uninstall** — a wizard: snapshot → uninstaller → scan → selection
+- **Findings** — a tree with tri-state checkboxes, a risk badge and the
+  reasoning per row, grouped by category (files / registry / services / …)
+- **Backups** — history, restore, clean up
+- **Settings** — scan depth, restore points, retention, language
+- **Logs** — what Wave did, in plain words
+
+Progress arrives as a stream of Tauri events, not as one command that blocks
+for two minutes.
+
+On first start **dry run** is active: Wave shows what it would do and deletes
+nothing. It has to be switched off deliberately, once.
+
+---
+
+## 9. Testing
+
+None of this is possible without the `SystemProvider` abstraction from
+section 1:
+
+- **Unit tests** against `FixtureProvider` — an invented registry and file
+  system state as JSON, the expected findings as a golden file. Runs on Linux,
+  in CI, in seconds.
+- **Integration tests** on `windows-latest` in GitHub Actions: real registry
+  reads against a test key under `HKCU`, MSI enumeration, a file walk in a temp
+  directory.
+- **A manual matrix** in Windows Sandbox / Hyper-V with checkpoints, because a
+  real uninstall cannot be meaningfully mocked. At minimum: an MSI program
+  (7-Zip), an NSIS program (Notepad++), an Inno Setup program, a Squirrel app
+  (Discord), a UWP app, and a 32-bit program on 64-bit.
+- **Regression cover:** every false positive that turns up in the wild is
+  frozen as a fixture.
 
 CI: `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`,
-`tsc --noEmit`, `eslint`, Build auf `windows-latest`.
+`tsc --noEmit`, `eslint`, and a build on `windows-latest`.
 
 ---
 
-## 10. Phasen
+## 10. Phases
 
-| Phase | Inhalt | Ergebnis |
+| Phase | Content | Result |
 |---|---|---|
-| **P0** | Tauri-Scaffold, Manifest, CI, Logging, `SystemProvider`-Trait, Inventar aus allen vier Quellen | Read-only-Browser aller installierten Programme. Löscht nichts, ist aber sofort benutzbar. |
-| **P1** | Nativen Uninstaller starten, Job-Object-Warten, Scan der `InstallLocation`, Uninstall-Key entfernen, Backup für Dateien | Ein Programm lässt sich deinstallieren, offensichtliche Reste verschwinden. |
-| **P2** | Vollständiger Scan (Registry-Breite, Dienste, Tasks, Verknüpfungen), Scoring, Schutzliste | Das eigentliche Feature. Ab hier ist es ein Revo-Konkurrent. |
-| **P3** | Journal, Undo, Wiederherstellungspunkte, Backup-Verwaltung | Sicherheitsnetz komplett. |
-| **P4** | Junk-Hunter (Reste ohne Deinstallation finden), Autostart-Manager, Dienste-/Task-Ansicht, erzwungene Deinstallation bei kaputtem Uninstaller | Die Extras, für die man Revo kauft. |
-| **P5** | i18n (de/en), Code-Signing, Installer (WiX), Tauri-Updater | Auslieferbar. |
+| **P0** | Tauri scaffold, manifest, CI, logging, the `SystemProvider` trait, inventory from all four sources | A read-only browser of every installed program. Deletes nothing, but is usable at once. |
+| **P1** | Start the native uninstaller, wait on a job object, scan the `InstallLocation`, remove the uninstall key, back up files | A program can be uninstalled and the obvious leftovers disappear. |
+| **P2** | The full scan (registry breadth, services, tasks, shortcuts), scoring, protection list | The actual feature. From here on it competes with Revo. |
+| **P3** | Journal, undo, restore points, backup management | The safety net, complete. |
+| **P4** | Junk hunter (find leftovers with no uninstall), startup manager, service and task views, forced uninstall when the uninstaller is broken | The extras people buy Revo for. |
+| **P5** | i18n (de/en), code signing, an installer (WiX), the Tauri updater | Shippable. |
 
-Reihenfolge ist nicht verhandelbar: P3 muss vor P4 kommen. Erzwungene
-Deinstallation ohne funktionierendes Undo ist ein Datenverlust-Feature.
-
----
-
-## 11. Risiken
-
-**Falsch-positive Funde zerstören Nutzerdaten.** Das größte Risiko, und
-gleichzeitig der Grund für fast jede Design-Entscheidung hier: Backup statt
-Löschen, konservative Voreinstellungen, Schutzliste vor Scoring, Trockenlauf
-beim ersten Start, Begründung an jedem Fund.
-
-**Virenscanner schlagen an.** Ein Programm, das Registry-Schlüssel löscht und
-Dateien in `Program Files` verschiebt, sieht für Heuristiken aus wie Malware.
-Gegenmittel: Code-Signing-Zertifikat (EV, sonst dauert der SmartScreen-Aufbau
-Monate), frühzeitige Einreichung bei Microsoft und den großen Anbietern.
-
-**Uninstaller verhalten sich unvorhersehbar.** Manche geben sofort zurück,
-manche fragen nach, manche starten neu. Timeout plus manueller
-"Uninstaller ist fertig"-Button als Notausgang.
-
-**Windows ändert sich.** Registry-Layouts und APIs verschieben sich zwischen
-Builds. Deshalb liegt das Wissen über Pfade in Datentabellen, nicht verstreut
-im Code.
-
-**Kein Telemetrie-Rückkanal.** Standardmäßig aus. Ein Tool mit
-Systemrechten, das nach Hause telefoniert, verdient kein Vertrauen.
+The order is not negotiable: P3 must come before P4. Forced uninstallation
+without a working undo is a data-loss feature.
 
 ---
 
-## Bewusst nicht in v1
+## 11. Risks
 
-- **Installations-Monitoring per Filtertreiber.** Revos Kernfeature, aber ein
-  Kernel-Treiber braucht Signierung, WHQL-Aufwand und riskiert Bluescreens.
-  Falls später gewünscht, geht das auch in Userspace über Snapshot-Vergleiche
-  vorher/nachher — langsamer, aber ohne Treiber.
-- **Alle Benutzerprofile.** v1 scannt nur den angemeldeten Nutzer. Andere
-  Profile brauchen `RegLoadKey` auf fremde `NTUSER.DAT` — machbar, aber
-  eigenständige Komplexität.
-- **Browser-Cleaner, Autostart-Optimierung, "PC beschleunigen".** Anderes
-  Produkt.
+**False positives destroy user data.** The largest risk, and the reason behind
+nearly every design decision here: back up instead of delete, conservative
+defaults, protection list before scoring, dry run on first start, reasoning
+attached to every finding.
+
+**Antivirus software objects.** A program that deletes registry keys and moves
+files inside `Program Files` looks like malware to a heuristic. The remedy: a
+code signing certificate (EV, or building SmartScreen reputation takes months)
+and early submission to Microsoft and the major vendors.
+
+**Uninstallers behave unpredictably.** Some return immediately, some ask
+questions, some restart. A timeout plus a manual "the uninstaller has finished"
+button as the escape hatch.
+
+**Windows changes.** Registry layouts and APIs shift between builds. Which is
+why knowledge about paths lives in data tables, not scattered through the code.
+
+**No telemetry channel.** Off by default. A tool with system privileges that
+phones home does not deserve trust.
 
 ---
 
-## Nächster Schritt
+## Deliberately not in v1
 
-P0. Konkret: Tauri-Scaffold aufsetzen, `SystemProvider` definieren, das
-Inventar aus Registry + MSI + AppX lesen und als sortierbare Liste anzeigen.
-Das ist in sich abgeschlossen, löscht nichts und legt trotzdem die
-Abstraktion fest, an der alles Weitere hängt.
+- **Install monitoring via a filter driver.** Revo's core feature, but a kernel
+  driver needs signing, WHQL effort, and risks bluescreens. If it is wanted
+  later, it can also be done in user space through before/after snapshot
+  comparison — slower, but with no driver.
+- **All user profiles.** v1 scans only the signed-in user. Other profiles need
+  `RegLoadKey` on someone else's `NTUSER.DAT` — doable, but complexity of its
+  own.
+- **Browser cleaner, startup optimization, "speed up your PC".** A different
+  product.
+
+---
+
+## Next step
+
+P0. Concretely: set up the Tauri scaffold, define `SystemProvider`, read the
+inventory from registry + MSI + AppX and show it as a sortable list. That is
+self-contained, deletes nothing, and still pins down the abstraction everything
+else hangs off.
