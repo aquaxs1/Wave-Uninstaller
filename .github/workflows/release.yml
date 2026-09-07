@@ -58,18 +58,32 @@ jobs:
         shell: bash
         run: |
           mkdir -p artifacts
-          # Found rather than hardcoded: Tauri puts the version in the
-          # installer's filename, and names the bare executable after either
+          # Searched by shape rather than by a fixed path. src-tauri is a
+          # workspace member, so Cargo writes to <repo>/target, not
+          # <repo>/src-tauri/target — and Tauri puts the version in the
+          # installer's filename and names the bare executable after either
           # the Cargo package or the product name depending on version.
-          SETUP=$(find src-tauri/target/release/bundle/nsis -name '*-setup.exe' | head -1)
-          PORTABLE=$(find src-tauri/target/release -maxdepth 1 -name '*.exe' | head -1)
+          #
+          # 2>/dev/null and || true are load-bearing: the step runs under
+          # `set -e`, and find exits non-zero on a directory that does not
+          # exist, which would kill the step before the diagnostics below
+          # could report what actually got built.
+          SETUP=$(find . -path '*/release/bundle/nsis/*-setup.exe' -print -quit 2>/dev/null || true)
+          PORTABLE=$(find . -path '*/release/*.exe' \
+                          -not -path '*/bundle/*' \
+                          -not -path '*/build/*' \
+                          -not -path '*/deps/*' \
+                          -print -quit 2>/dev/null || true)
+
+          echo "setup:    ${SETUP:-none}"
+          echo "portable: ${PORTABLE:-none}"
 
           if [ -z "$SETUP" ] || [ -z "$PORTABLE" ]; then
-            echo "expected an installer and an executable; found:" >&2
-            echo "  setup:    ${SETUP:-none}" >&2
-            echo "  portable: ${PORTABLE:-none}" >&2
-            find src-tauri/target/release -maxdepth 1 -name '*.exe' >&2 || true
-            find src-tauri/target/release/bundle -type f >&2 || true
+            echo "the build did not produce both an installer and an executable" >&2
+            echo "every .exe under a release directory:" >&2
+            find . -path '*/release/*' -name '*.exe' >&2 2>/dev/null || true
+            echo "everything under a bundle directory:" >&2
+            find . -path '*/bundle/*' -type f >&2 2>/dev/null || true
             exit 1
           fi
 
