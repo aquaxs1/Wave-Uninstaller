@@ -1,0 +1,142 @@
+name: Build & release binaries
+
+# Builds the Windows desktop app and publishes it to a GitHub Release.
+#
+# Assets are named without a version so that
+# github.com/<repo>/releases/latest/download/<asset> always resolves to the
+# newest build — the download page links straight at those URLs and needs no
+# change when a new version ships.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.1.0). Defaults to v<version from tauri.conf.json>."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (Windows x64)
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install stable --profile minimal
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Read the version
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+
+      # Builds the frontend and the Rust side, then wraps the result in an
+      # NSIS installer.
+      - name: Build the app
+        run: npm run tauri build
+
+      # Stable, version-free names so the download page's links keep working.
+      # Tauri writes the installer with the version in its filename.
+      - name: Collect the assets
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          # Found rather than hardcoded: Tauri puts the version in the
+          # installer's filename, and names the bare executable after either
+          # the Cargo package or the product name depending on version.
+          SETUP=$(find src-tauri/target/release/bundle/nsis -name '*-setup.exe' | head -1)
+          PORTABLE=$(find src-tauri/target/release -maxdepth 1 -name '*.exe' | head -1)
+
+          if [ -z "$SETUP" ] || [ -z "$PORTABLE" ]; then
+            echo "expected an installer and an executable; found:" >&2
+            echo "  setup:    ${SETUP:-none}" >&2
+            echo "  portable: ${PORTABLE:-none}" >&2
+            find src-tauri/target/release -maxdepth 1 -name '*.exe' >&2 || true
+            find src-tauri/target/release/bundle -type f >&2 || true
+            exit 1
+          fi
+
+          cp "$SETUP" "artifacts/Wave-Uninstaller-Setup-x64.exe"
+          cp "$PORTABLE" "artifacts/Wave-Uninstaller-Portable-x64.exe"
+          ls -la artifacts
+
+      - name: Checksums
+        shell: bash
+        working-directory: artifacts
+        run: |
+          for FILE in *.exe; do
+            certutil -hashfile "$FILE" SHA256 | sed -n '2p' | tr -d '\r' \
+              | awk -v f="$FILE" '{print $0"  "f}' >> SHA256SUMS.txt
+          done
+          cat SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: artifacts/*
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Resolve the tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="v${{ needs.build.outputs.version }}"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Wave Uninstaller ${{ needs.build.outputs.version }}
+          generate_release_notes: true
+          files: artifacts/*
+          body: |
+            Windows build of Wave Uninstaller ${{ needs.build.outputs.version }}.
+
+            **This build only reads.** It lists what is installed on the
+            machine — registry entries, MSI products and Store packages — and
+            does nothing else. Uninstalling and leftover removal arrive in
+            later phases, deliberately after the undo that backs them out.
+
+            | File | What it is |
+            | --- | --- |
+            | `Wave-Uninstaller-Setup-x64.exe` | Installer |
+            | `Wave-Uninstaller-Portable-x64.exe` | The app itself, no installation |
+
+            Neither is **code-signed**, so SmartScreen will warn on first
+            launch: More info -> Run anyway.
+
+            Verify a download against `SHA256SUMS.txt`.

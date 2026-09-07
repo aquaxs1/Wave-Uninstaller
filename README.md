@@ -88,6 +88,16 @@ trustworthy.
 
 The rules that follow from it are in [`CLAUDE.md`](./CLAUDE.md).
 
+## Download
+
+Windows builds — installer or portable — are on the
+[releases page](https://github.com/aquaxs1/Wave-uninstaller/releases/latest),
+built by [`release.yml`](./.github/workflows/release.yml) and linked from the
+[download page](https://github.com/aquaxs1/Wave-uninstaller/blob/main/site/download.html).
+They are not code-signed, so SmartScreen warns on first launch.
+
+Remember what this build is: it lists what is installed and does nothing else.
+
 ## Developing
 
 Prerequisites: Rust (stable, ≥ 1.82), Node 22, and for the app the

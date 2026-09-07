@@ -37,6 +37,15 @@ never find this folder.
 Pages is a mirror. Vercel is the canonical host, which is what the `canonical`
 links, the Open Graph URLs and `sitemap.xml` point at.
 
+## The download links
+
+`download.html` points at
+`github.com/aquaxs1/Wave-uninstaller/releases/latest/download/<asset>`, which
+always resolves to the newest published release. The asset names carry no
+version for exactly that reason, so a new release needs no change here.
+The binaries come from
+[`.github/workflows/release.yml`](../.github/workflows/release.yml).
+
 ## The domain
 
 `https://wave-uninstaller.vercel.app` is written into four places. Change all
@@ -52,6 +61,7 @@ four together if the site ever moves:
 | File | Purpose |
 |---|---|
 | `index.html` | Landing page — what it does, why it is safe, where it stands |
+| `download.html` | The Windows builds, plus checksums and how to build it yourself |
 | `roadmap.html` | All six phases in detail, plus how the code is laid out |
 | `terms.html` | Terms of Use |
 | `404.html` | Not found |
