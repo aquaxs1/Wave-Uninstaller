@@ -8,13 +8,13 @@
     <title>Wave Uninstaller — uninstall and clean up what is left</title>
     <meta
       name="description"
-      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services, scheduled tasks and startup entries. Nothing is deleted, only moved to a backup."
+      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services and startup entries. Nothing is deleted, only moved to a backup."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Wave Uninstaller — uninstall and clean up what is left" />
     <meta
       property="og:description"
-      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services, scheduled tasks and startup entries. Nothing is deleted, only moved to a backup."
+      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services and startup entries. Nothing is deleted, only moved to a backup."
     />
     <meta
       property="og:image"
@@ -91,6 +91,32 @@
           <path
             d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.3 9.3 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.8 1 1.7 1 2.8 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.2 10.2 0 0 0 22 12.2C22 6.6 17.5 2 12 2z"
           />
+        </symbol>
+        <symbol
+          id="i-download"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 4v10" />
+          <path d="M8 10.5l4 4 4-4" />
+          <path d="M5 19h14" />
+        </symbol>
+        <symbol
+          id="i-monitor"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="4.5" width="18" height="12" rx="1.6" />
+          <path d="M8.5 20.5h7" />
+          <path d="M12 16.5v4" />
         </symbol>
         <symbol
           id="i-list"
@@ -171,6 +197,7 @@
           <span class="brand__name">Wave <span>Uninstaller</span></span>
         </a>
         <nav class="site-nav" id="site-nav" aria-label="Main">
+          <a href="download.html">Download</a>
           <a href="roadmap.html">Roadmap</a>
           <a href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md" rel="noopener"
             >Plan</a
@@ -186,6 +213,7 @@
           >
             <svg><use href="#i-moon"></use></svg>
           </button>
+          <a class="btn btn--primary btn--sm btn--cta" href="download.html">Download</a>
           <button
             class="btn btn--ghost btn--icon nav-toggle"
             data-nav-toggle
@@ -205,32 +233,34 @@
         <div class="wrap hero__inner">
           <p class="pill">
             <span class="pill__dot" aria-hidden="true"></span>
-            Phase P0 of 5 — reads the inventory, deletes nothing yet
+            Phase P0 of 5 — reads the inventory, deletes nothing
           </p>
 
           <h1>Uninstalling is the easy part.</h1>
 
           <p class="lead">
             The hard part is what stays behind: orphaned registry keys, folders left in
-            <code>AppData</code>, services that no longer start anything, startup entries for
-            programs that no longer exist. Wave finds them — and can undo every single step.
+            <code>AppData</code>, services that no longer start anything. Wave finds them — and can
+            undo every step.
           </p>
 
           <div class="hero-actions">
+            <a class="btn btn--primary btn--lg" href="download.html">
+              <svg><use href="#i-download"></use></svg>
+              Download for Windows
+            </a>
             <a
-              class="btn btn--primary btn--lg"
+              class="btn btn--lg"
               href="https://github.com/aquaxs1/Wave-uninstaller"
               rel="noopener"
             >
               <svg><use href="#i-github"></use></svg>
-              View on GitHub
+              Source
             </a>
-            <a class="btn btn--lg" href="roadmap.html">See the roadmap</a>
           </div>
 
           <p class="hero-note">
-            Windows 10 (1809+) and 11 &middot; x64 and arm64 &middot; Tauri&nbsp;2, Rust, React
-            &middot; MIT licensed
+            Windows 10 (1809+) and 11 &middot; x64 &middot; free and MIT licensed &middot; unsigned
           </p>
         </div>
       </section>
@@ -245,10 +275,7 @@
               height="800"
               loading="lazy"
             />
-            <figcaption>
-              The program list. Rendered from the test fixture rather than a real machine, which is
-              why the entries are invented.
-            </figcaption>
+            <figcaption>Rendered from the test fixture, so the entries are invented.</figcaption>
           </figure>
         </div>
       </section>
@@ -257,10 +284,7 @@
         <div class="wrap">
           <div class="section-head">
             <h2>What Wave does</h2>
-            <p>
-              One of these three works today. The site says which, because a roadmap presented as a
-              feature list is just a lie with better typography.
-            </p>
+            <p>One of these three works today. The card says which.</p>
           </div>
 
           <div class="cards">
@@ -268,8 +292,8 @@
               <svg class="card__icon"><use href="#i-list"></use></svg>
               <h3>Finds what is installed</h3>
               <p>
-                From three sources: the registry uninstall keys, the MSI product database and the
-                Store packages. Anything appearing in more than one is merged into a single row.
+                Registry uninstall keys, the MSI database and Store packages, merged into one row
+                per program.
               </p>
               <span class="tag tag--ok">Done</span>
             </article>
@@ -278,8 +302,8 @@
               <svg class="card__icon"><use href="#i-broom"></use></svg>
               <h3>Cleans up afterwards</h3>
               <p>
-                Once the native uninstaller has run, Wave looks for what it left: folders, registry
-                keys, services, scheduled tasks, startup entries, shortcuts, prefetch files.
+                What the uninstaller left: folders, registry keys, services, scheduled tasks,
+                startup entries, shortcuts.
               </p>
               <span class="tag">Planned — P2</span>
             </article>
@@ -288,8 +312,8 @@
               <svg class="card__icon"><use href="#i-undo"></use></svg>
               <h3>Takes it all back</h3>
               <p>
-                Every deletion goes into a backup first, and every operation is journalled before it
-                runs. Even a crash mid-operation can be rolled back.
+                Every deletion goes to a backup first, and every operation is journalled before it
+                runs.
               </p>
               <span class="tag">Planned — P3</span>
             </article>
@@ -300,11 +324,8 @@
       <section id="trust">
         <div class="wrap">
           <div class="section-head">
-            <h2>Why you should be able to trust it</h2>
-            <p>
-              An uninstaller that catches the wrong directory once is unusable. Two decisions carry
-              the whole design.
-            </p>
+            <h2>Why you should trust it</h2>
+            <p>An uninstaller that catches the wrong directory once is unusable.</p>
           </div>
 
           <div class="split">
@@ -312,37 +333,34 @@
               <svg class="card__icon"><use href="#i-shield"></use></svg>
               <h3>Deleting means moving</h3>
               <p>
-                Nothing is removed outright. Files move into a backup folder with their path
-                structure intact, registry keys are saved as JSON and as an importable
-                <code>.reg</code> file, services and tasks as their full configuration.
+                Files move to a backup with their paths intact; registry keys are saved as JSON and
+                as an importable <code>.reg</code> file.
               </p>
               <p>
-                Not the recycle bin: it cannot hold registry keys, it has a per-drive size limit,
-                and people empty it without thinking.
+                Not the recycle bin — that cannot hold registry keys, and people empty it without
+                thinking.
               </p>
             </article>
 
             <article>
               <svg class="card__icon"><use href="#i-flask"></use></svg>
-              <h3>The logic is testable without Windows</h3>
+              <h3>Testable without Windows</h3>
               <p>
-                The core never calls a Windows API. It reads the system through a single trait with
-                two implementations: the real one, and one that reads an invented registry and file
-                system state from JSON.
+                The core never calls a Windows API. It reads through one trait with two
+                implementations: the real one, and one that reads an invented system state from
+                JSON.
               </p>
               <p>
-                So the logic deciding which files may be deleted runs in milliseconds against frozen
-                test cases, instead of by hand in a VM. An uninstaller whose decisions can only be
-                checked by trying them will never be trustworthy.
+                So the logic deciding what may be deleted runs against frozen test cases in
+                milliseconds, instead of by hand in a VM.
               </p>
             </article>
           </div>
 
           <p class="note">
-            <strong>What Wave never touches:</strong> Windows directories and <code>WinSxS</code>,
-            anything owned by <code>TrustedInstaller</code>, shared runtimes such as the VC++
-            redistributables, and any path belonging to the install location of
-            <em>another</em> installed program. That check runs before scoring, not after.
+            <strong>Never touched:</strong> Windows directories, <code>WinSxS</code>, anything owned
+            by <code>TrustedInstaller</code>, shared runtimes, and any path belonging to another
+            installed program. Checked before scoring, not after.
           </p>
         </div>
       </section>
@@ -350,11 +368,8 @@
       <section class="section--sunken">
         <div class="wrap">
           <div class="section-head">
-            <h2>Where the project stands</h2>
-            <p>
-              The order is not negotiable: forced uninstallation without a working undo would be a
-              data-loss feature.
-            </p>
+            <h2>Where it stands</h2>
+            <p>P3 builds the undo that P4 needs, so the order cannot change.</p>
           </div>
 
           <ol class="roadmap">
@@ -362,7 +377,7 @@
               <span class="roadmap__phase">P0</span>
               <div class="roadmap__body">
                 <h3>Inventory</h3>
-                <p>Read the registry, MSI and Store packages and show them as a sortable list.</p>
+                <p>Read the registry, MSI and Store packages, show them as a sortable list.</p>
               </div>
               <span class="tag tag--ok">Done</span>
             </li>
@@ -370,10 +385,7 @@
               <span class="roadmap__phase">P1</span>
               <div class="roadmap__body">
                 <h3>Uninstalling</h3>
-                <p>
-                  Run the native uninstaller, wait for the whole process tree, remove the obvious
-                  leftovers.
-                </p>
+                <p>Run the native uninstaller, then remove the obvious leftovers.</p>
               </div>
               <span class="tag tag--next">Next</span>
             </li>
@@ -381,15 +393,13 @@
               <span class="roadmap__phase">P2</span>
               <div class="roadmap__body">
                 <h3>The scan</h3>
-                <p>Full search, a score for every finding, a hard protection list.</p>
+                <p>Full search, a score per finding, a hard protection list.</p>
               </div>
               <span class="tag">Open</span>
             </li>
           </ol>
 
-          <p class="section-cta">
-            <a class="btn" href="roadmap.html">All six phases in detail</a>
-          </p>
+          <p class="section-cta"><a class="btn" href="roadmap.html">All six phases</a></p>
         </div>
       </section>
     </main>
@@ -413,6 +423,7 @@
           <div class="foot-col">
             <h4>Project</h4>
             <ul>
+              <li><a href="download.html">Download</a></li>
               <li><a href="roadmap.html">Roadmap</a></li>
               <li><a href="index.html#what">What it does</a></li>
               <li><a href="index.html#trust">Safety</a></li>

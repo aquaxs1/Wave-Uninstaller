@@ -8,13 +8,13 @@
     <title>Roadmap — Wave Uninstaller</title>
     <meta
       name="description"
-      content="The six phases of Wave Uninstaller, what each one contains and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
+      content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Roadmap — Wave Uninstaller" />
     <meta
       property="og:description"
-      content="The six phases of Wave Uninstaller, what each one contains and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
+      content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
     />
     <meta
       property="og:image"
@@ -91,6 +91,32 @@
           <path
             d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.3 9.3 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.8 1 1.7 1 2.8 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.2 10.2 0 0 0 22 12.2C22 6.6 17.5 2 12 2z"
           />
+        </symbol>
+        <symbol
+          id="i-download"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M12 4v10" />
+          <path d="M8 10.5l4 4 4-4" />
+          <path d="M5 19h14" />
+        </symbol>
+        <symbol
+          id="i-monitor"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="4.5" width="18" height="12" rx="1.6" />
+          <path d="M8.5 20.5h7" />
+          <path d="M12 16.5v4" />
         </symbol>
         <symbol
           id="i-list"
@@ -171,6 +197,7 @@
           <span class="brand__name">Wave <span>Uninstaller</span></span>
         </a>
         <nav class="site-nav" id="site-nav" aria-label="Main">
+          <a href="download.html">Download</a>
           <a href="roadmap.html" aria-current="page">Roadmap</a>
           <a href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md" rel="noopener"
             >Plan</a
@@ -186,6 +213,7 @@
           >
             <svg><use href="#i-moon"></use></svg>
           </button>
+          <a class="btn btn--primary btn--sm btn--cta" href="download.html">Download</a>
           <button
             class="btn btn--ghost btn--icon nav-toggle"
             data-nav-toggle
@@ -205,9 +233,8 @@
         <div class="wrap hero__inner">
           <h1>Roadmap</h1>
           <p class="lead">
-            Six phases. One is finished. The order is not negotiable — P3 builds the undo that P4
-            depends on, and forced uninstallation without a working undo is a data-loss feature, not
-            a feature.
+            Six phases, one finished. P3 builds the undo that P4 depends on, so the order cannot
+            change: forced uninstallation without it is a data-loss feature.
           </p>
         </div>
       </section>
@@ -220,9 +247,8 @@
               <div class="roadmap__body">
                 <h3>Inventory</h3>
                 <p>
-                  Read the registry uninstall keys in both registry views, the MSI product database
-                  and the installed Store packages, merge them into one row per program, and show
-                  the result as a sortable list with search and a detail panel.
+                  Read the registry, MSI database and Store packages, merge them into one row per
+                  program, and show it as a sortable list.
                 </p>
               </div>
               <span class="tag tag--ok">Done</span>
@@ -231,15 +257,12 @@
               <span class="roadmap__phase" aria-hidden="true"></span>
               <div class="roadmap__body">
                 <ul>
+                  <li>Both registry views, so 32-bit programs are not silently missing</li>
                   <li>
-                    Both the 64-bit and the 32-bit registry view, so 32-bit programs are not
-                    silently missing
+                    MSI product codes tie a registry entry to its product; display names are only a
+                    fallback
                   </li>
-                  <li>
-                    MSI product codes used to tie a registry entry to its product, with display
-                    names only as a fallback
-                  </li>
-                  <li>Reads that fail become a visible warning rather than a silent gap</li>
+                  <li>Reads that fail become a visible warning, not a silent gap</li>
                 </ul>
               </div>
             </li>
@@ -248,9 +271,8 @@
               <div class="roadmap__body">
                 <h3>Uninstalling</h3>
                 <p>
-                  Start the program's own uninstaller and wait for it to actually finish, then
-                  remove the leftovers that need no searching for — the install directory and the
-                  uninstall key itself.
+                  Start the program's own uninstaller, wait for it to really finish, then remove the
+                  install directory and the uninstall key.
                 </p>
               </div>
               <span class="tag tag--next">Next</span>
@@ -260,11 +282,11 @@
               <div class="roadmap__body">
                 <ul>
                   <li>
-                    Waiting on the whole process tree through a job object: NSIS and Inno Setup copy
-                    themselves to %TEMP% and exit the original process immediately
+                    Waits on the whole process tree: NSIS and Inno copy themselves to %TEMP% and
+                    exit at once
                   </li>
-                  <li>Files move to a backup from the very first release that deletes anything</li>
-                  <li>Store packages go through the package manager rather than a command line</li>
+                  <li>Files move to a backup from the first release that deletes anything</li>
+                  <li>Store packages go through the package manager, not a command line</li>
                 </ul>
               </div>
             </li>
@@ -273,8 +295,8 @@
               <div class="roadmap__body">
                 <h3>The scan</h3>
                 <p>
-                  The actual feature. Search every place leftovers hide, score each finding, and
-                  never offer anything the protection list claims.
+                  The actual feature. Search everywhere leftovers hide, score each finding, and
+                  never offer what the protection list claims.
                 </p>
               </div>
               <span class="tag">Open</span>
@@ -284,20 +306,16 @@
               <div class="roadmap__body">
                 <ul>
                   <li>
-                    File system: Program Files, ProgramData, AppData, temp folders, prefetch,
-                    shortcuts, jump lists
+                    Files: Program Files, ProgramData, AppData, temp, prefetch, shortcuts, jump
+                    lists
                   </li>
                   <li>
-                    Registry: vendor keys, App Paths, shared DLL refcounts, file associations, shell
-                    extensions, startup entries, services, firewall rules
+                    Registry: vendor keys, App Paths, shared DLL refcounts, shell extensions,
+                    startup, services
                   </li>
+                  <li>Services and scheduled tasks through their own APIs</li>
                   <li>
-                    System objects: services and drivers through the SCM, scheduled tasks through
-                    the task scheduler
-                  </li>
-                  <li>
-                    Findings land in three buckets — safe, review, unsure — and each one carries its
-                    reasoning
+                    Three buckets — safe, review, unsure — each finding carrying its reasoning
                   </li>
                 </ul>
               </div>
@@ -307,8 +325,8 @@
               <div class="roadmap__body">
                 <h3>Undo</h3>
                 <p>
-                  The safety net that everything after it depends on. Nothing is deleted, only
-                  moved, and every operation is written to a journal before it runs.
+                  The safety net everything after it depends on. Nothing is deleted, only moved, and
+                  every operation is journalled first.
                 </p>
               </div>
               <span class="tag">Open</span>
@@ -317,14 +335,10 @@
               <span class="roadmap__phase" aria-hidden="true"></span>
               <div class="roadmap__body">
                 <ul>
-                  <li>Files keep their path structure, ACLs and timestamps inside the backup</li>
-                  <li>
-                    Registry keys are stored as structured JSON and as an importable .reg file
-                  </li>
-                  <li>
-                    An append-only journal means a crash mid-operation can still be rolled back
-                  </li>
-                  <li>Optional system restore point before anything risky</li>
+                  <li>Files keep their paths, ACLs and timestamps in the backup</li>
+                  <li>Registry keys stored as JSON and as an importable .reg file</li>
+                  <li>An append-only journal means a crash mid-operation still rolls back</li>
+                  <li>Optional system restore point</li>
                 </ul>
               </div>
             </li>
@@ -333,8 +347,7 @@
               <div class="roadmap__body">
                 <h3>The extras</h3>
                 <p>
-                  The things people actually buy Revo for — deliberately last, because each one
-                  needs the undo from P3 to already work.
+                  What people buy Revo for — last, because each one needs P3's undo to already work.
                 </p>
               </div>
               <span class="tag">Open</span>
@@ -343,9 +356,9 @@
               <span class="roadmap__phase" aria-hidden="true"></span>
               <div class="roadmap__body">
                 <ul>
-                  <li>Junk hunter: find leftovers of programs that were uninstalled long ago</li>
-                  <li>Startup manager, service and scheduled task views</li>
-                  <li>Forced uninstall for programs whose own uninstaller is broken</li>
+                  <li>Junk hunter: leftovers of programs uninstalled long ago</li>
+                  <li>Startup manager, service and task views</li>
+                  <li>Forced uninstall when a program's own uninstaller is broken</li>
                 </ul>
               </div>
             </li>
@@ -353,7 +366,7 @@
               <span class="roadmap__phase">P5</span>
               <div class="roadmap__body">
                 <h3>Shipping</h3>
-                <p>Everything between working software and something a stranger can install.</p>
+                <p>Between working software and something a stranger can install.</p>
               </div>
               <span class="tag">Open</span>
             </li>
@@ -362,17 +375,18 @@
               <div class="roadmap__body">
                 <ul>
                   <li>Translations</li>
-                  <li>Code signing — without it SmartScreen treats a fresh binary as suspicious</li>
-                  <li>An installer and automatic updates</li>
+                  <li>Code signing — without it SmartScreen flags every fresh binary</li>
+                  <li>Automatic updates</li>
                 </ul>
               </div>
             </li>
           </ol>
 
-          <p class="note">
-            <strong>Nothing is downloadable yet.</strong> Wave currently reads the inventory and
-            nothing else. The moment there is a build worth installing, this site gets a download
-            page — until then, saying so plainly beats a button that leads nowhere.
+          <p class="section-cta">
+            <a class="btn btn--primary" href="download.html">
+              <svg><use href="#i-download"></use></svg>
+              Download the P0 build
+            </a>
           </p>
         </div>
       </section>
@@ -423,7 +437,7 @@
               href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md"
               rel="noopener"
             >
-              Read the full technical plan
+              The full technical plan
             </a>
           </p>
         </div>
@@ -449,6 +463,7 @@
           <div class="foot-col">
             <h4>Project</h4>
             <ul>
+              <li><a href="download.html">Download</a></li>
               <li><a href="roadmap.html">Roadmap</a></li>
               <li><a href="index.html#what">What it does</a></li>
               <li><a href="index.html#trust">Safety</a></li>
