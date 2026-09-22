@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { History } from "./components/History";
+import { Logo } from "./components/Logo";
 import { ProgramDetail } from "./components/ProgramDetail";
 import { ProgramTable, type SortKey } from "./components/ProgramTable";
+import { RemovalPanel } from "./components/RemovalPanel";
 import { Warnings } from "./components/Warnings";
 import { isDesktop, listPrograms } from "./lib/api";
-import type { Inventory } from "./types";
+import type { Inventory, Program } from "./types";
 
 type LoadState =
   | { status: "loading" }
@@ -20,8 +23,14 @@ export function App() {
     descending: false,
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // The program being removed is held as a whole, not as an id: once the
+  // removal finishes it is gone from the inventory, and the report has to stay
+  // on screen after the row behind it disappears.
+  const [removing, setRemoving] = useState<Program | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const request = useRef(0);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     if (!isDesktop()) {
       setState({
         status: "failed",
@@ -30,19 +39,21 @@ export function App() {
       return;
     }
 
-    let cancelled = false;
+    // Only the newest read is allowed to land: a removal reloads the list
+    // while an earlier read may still be in flight, and the older answer still
+    // contains the program that was just removed.
+    const token = (request.current += 1);
+    setState({ status: "loading" });
     listPrograms()
       .then((inventory) => {
-        if (!cancelled) setState({ status: "ready", inventory });
+        if (token === request.current) setState({ status: "ready", inventory });
       })
       .catch((error: unknown) => {
-        if (!cancelled) setState({ status: "failed", message: String(error) });
+        if (token === request.current) setState({ status: "failed", message: String(error) });
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(load, [load]);
 
   const inventory = state.status === "ready" ? state.inventory : null;
 
@@ -92,8 +103,10 @@ export function App() {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="relative flex h-full flex-col">
       <header className="border-line flex items-center gap-3 border-b px-4 py-3">
+        <Logo className="text-wave size-7 shrink-0" />
+
         <div className="flex-1">
           <h1 className="text-[15px] font-semibold">Wave Uninstaller</h1>
           <p className="text-muted text-[12px]">
@@ -110,6 +123,14 @@ export function App() {
           placeholder="Search name, publisher or path"
           className="bg-surface border-line placeholder:text-muted/70 focus:border-wave w-72 rounded border px-2.5 py-1.5 text-[13px] outline-none select-text"
         />
+
+        <button
+          type="button"
+          onClick={() => setShowHistory(true)}
+          className="border-line hover:bg-raised rounded border px-2.5 py-1.5 text-[12px]"
+        >
+          Backups
+        </button>
 
         <label className="text-muted flex items-center gap-2 text-[12px]">
           <input
@@ -154,8 +175,26 @@ export function App() {
           )}
         </main>
 
-        {selected && <ProgramDetail program={selected} onClose={() => setSelectedId(null)} />}
+        {selected && (
+          <ProgramDetail
+            program={selected}
+            onClose={() => setSelectedId(null)}
+            onRemove={() => setRemoving(selected)}
+          />
+        )}
       </div>
+
+      {removing && (
+        <RemovalPanel
+          program={removing}
+          onClose={() => setRemoving(null)}
+          // The machine changed, so the list has to be read again rather than
+          // patched: an entry that is gone from the registry is gone from here.
+          onFinished={load}
+        />
+      )}
+
+      {showHistory && <History onClose={() => setShowHistory(false)} onRestored={load} />}
     </div>
   );
 }

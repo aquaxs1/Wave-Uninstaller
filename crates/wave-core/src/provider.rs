@@ -148,11 +148,29 @@ pub struct AppxPackage {
     pub is_framework: bool,
 }
 
-/// Read-only access to the parts of Windows the inventory needs.
+/// One entry of a directory listing.
 ///
-/// P0 only reads. Anything that writes — deleting keys, moving files — will
-/// land on a separate trait so that a provider used for scanning cannot
-/// accidentally be handed to code that mutates.
+/// `is_reparse_point` is not a detail: a junction in `AppData` looks exactly
+/// like a folder, and a scan that walks into one ends up judging files that
+/// live somewhere else entirely. Every walk in `wave-core` stops at one.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DirEntry {
+    /// The entry's own name, without the parent path.
+    pub name: String,
+    /// The full path, as it would be passed back to the provider.
+    pub path: String,
+    pub is_directory: bool,
+    /// A junction, symlink or other reparse point — never followed.
+    pub is_reparse_point: bool,
+    /// Zero for directories; their size is the sum of what is inside them.
+    pub size_bytes: u64,
+}
+
+/// Read-only access to the parts of Windows Wave needs.
+///
+/// Everything that *writes* lives in [`crate::mutator::SystemMutator`], a
+/// separate trait, so that a provider handed to the scan cannot be used to
+/// change anything.
 pub trait SystemProvider: Send + Sync {
     /// Immediate subkey names of `path`. Returns [`Error::NotFound`] when the
     /// key itself does not exist.
@@ -184,4 +202,22 @@ pub trait SystemProvider: Send + Sync {
 
     /// Whether a file or directory exists. Never follows into reparse points.
     fn path_exists(&self, path: &str) -> bool;
+
+    /// The entries of a directory, not recursing and not following links.
+    ///
+    /// Returns [`Error::NotFound`] for a path that is not a readable
+    /// directory.
+    ///
+    /// [`Error::NotFound`]: crate::error::Error::NotFound
+    fn read_dir(&self, path: &str) -> Result<Vec<DirEntry>>;
+
+    /// A text file's contents — journals and backup manifests, not program data.
+    fn read_text_file(&self, path: &str) -> Result<String>;
+
+    /// The wall clock, in seconds since the Unix epoch.
+    ///
+    /// Routed through the provider so that an operation id and the timestamps
+    /// in a journal are reproducible in a test rather than being whatever the
+    /// test machine's clock said.
+    fn now_unix_seconds(&self) -> u64;
 }

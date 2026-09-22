@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "What the main window is allowed to do. P0 only reads the inventory, so nothing beyond the defaults is granted.",
+  "description": "What the main window is allowed to do. Wave removes programs through its own commands, which are not permissions; nothing beyond the defaults is granted to the web layer itself.",
   "windows": ["main"],
   "permissions": ["core:default", "opener:default"]
 }

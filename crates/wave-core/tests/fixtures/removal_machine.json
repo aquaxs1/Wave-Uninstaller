@@ -1,0 +1,175 @@
+{
+  "environment": {
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramData": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\sebi\\AppData\\Roaming",
+    "LOCALAPPDATA": "C:\\Users\\sebi\\AppData\\Local",
+    "USERPROFILE": "C:\\Users\\sebi",
+    "SystemRoot": "C:\\Windows",
+    "windir": "C:\\Windows",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files"
+  },
+  "now_unix_seconds": 1767225600,
+  "registry": {
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AcmeDesigner": {
+      "DisplayName": {
+        "type": "sz",
+        "data": "Acme Designer"
+      },
+      "DisplayVersion": {
+        "type": "sz",
+        "data": "3.2.0"
+      },
+      "Publisher": {
+        "type": "sz",
+        "data": "Acme Corporation"
+      },
+      "InstallLocation": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Designer"
+      },
+      "EstimatedSize": {
+        "type": "dword",
+        "data": 262144
+      },
+      "UninstallString": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Designer\\uninstall.exe"
+      },
+      "QuietUninstallString": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Designer\\uninstall.exe /S"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AcmeReader": {
+      "DisplayName": {
+        "type": "sz",
+        "data": "Acme Reader"
+      },
+      "DisplayVersion": {
+        "type": "sz",
+        "data": "1.4.0"
+      },
+      "Publisher": {
+        "type": "sz",
+        "data": "Acme Corporation"
+      },
+      "InstallLocation": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Reader"
+      },
+      "UninstallString": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Reader\\uninstall.exe"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Acme": {
+      "Shared": {
+        "type": "sz",
+        "data": "settings both Acme products read"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Acme\\Designer": {
+      "License": {
+        "type": "sz",
+        "data": "DESIGNER-3-2-0"
+      },
+      "Layout": {
+        "type": "dword",
+        "data": 2
+      }
+    },
+    "HKLM:64:SOFTWARE\\Acme\\Designer\\Recent": {
+      "File1": {
+        "type": "expand_sz",
+        "data": "%USERPROFILE%\\Documents\\board.acme"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Acme\\Reader": {
+      "License": {
+        "type": "sz",
+        "data": "READER-1-4-0"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\designer.exe": {
+      "": {
+        "type": "sz",
+        "data": "C:\\Program Files\\Acme\\Designer\\designer.exe"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run": {
+      "Acme Designer": {
+        "type": "sz",
+        "data": "\"C:\\Program Files\\Acme\\Designer\\designer.exe\" --tray"
+      },
+      "SecurityHealth": {
+        "type": "expand_sz",
+        "data": "%windir%\\system32\\SecurityHealthSystray.exe"
+      }
+    },
+    "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\SharedDLLs": {
+      "C:\\Program Files\\Common Files\\acme.dll": {
+        "type": "dword",
+        "data": 2
+      }
+    }
+  },
+  "directories": [
+    "C:\\Program Files",
+    "C:\\Program Files\\Acme",
+    "C:\\Program Files\\Acme\\Designer",
+    "C:\\Program Files\\Acme\\Reader",
+    "C:\\Program Files\\Common Files",
+    "C:\\ProgramData",
+    "C:\\ProgramData\\Acme",
+    "C:\\ProgramData\\Acme\\Designer",
+    "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs",
+    "C:\\Users\\sebi",
+    "C:\\Users\\sebi\\Documents",
+    "C:\\Users\\sebi\\Documents\\Acme Designer",
+    "C:\\Users\\sebi\\AppData\\Roaming",
+    "C:\\Users\\sebi\\AppData\\Roaming\\Acme",
+    "C:\\Users\\sebi\\AppData\\Roaming\\Acme\\Designer",
+    "C:\\Users\\sebi\\AppData\\Local",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme\\Designer",
+    "C:\\Windows",
+    "C:\\Windows\\System32",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme Designer"
+  ],
+  "paths": [
+    "C:\\Program Files\\Acme\\Designer\\designer.exe",
+    "C:\\Program Files\\Acme\\Designer\\uninstall.exe",
+    "C:\\Program Files\\Acme\\Reader\\reader.exe",
+    "C:\\Program Files\\Common Files\\acme.dll",
+    "C:\\ProgramData\\Acme\\shared.ini",
+    "C:\\ProgramData\\Acme\\Designer\\licence.dat",
+    "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Acme Designer.lnk",
+    "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Acme Reader.lnk",
+    "C:\\Users\\sebi\\Documents\\Acme Designer\\board.acme",
+    "C:\\Users\\sebi\\AppData\\Roaming\\Acme\\Designer\\settings.json",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme\\Designer\\cache.bin",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme\\Designer\\Projects",
+    "C:\\Windows\\System32\\acme-driver.sys",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme Designer"
+  ],
+  "reparse_points": [
+    "C:\\Users\\sebi\\AppData\\Local\\Acme\\Designer\\Projects",
+    "C:\\Users\\sebi\\AppData\\Local\\Acme Designer"
+  ],
+  "file_sizes": {
+    "C:\\Program Files\\Acme\\Designer\\designer.exe": 41943040,
+    "C:\\Program Files\\Acme\\Designer\\uninstall.exe": 524288,
+    "C:\\ProgramData\\Acme\\Designer\\licence.dat": 2048,
+    "C:\\Users\\sebi\\AppData\\Roaming\\Acme\\Designer\\settings.json": 4096,
+    "C:\\Users\\sebi\\AppData\\Local\\Acme\\Designer\\cache.bin": 1048576
+  },
+  "uninstaller": {
+    "exit_code": 0,
+    "removes_paths": ["C:\\Program Files\\Acme\\Designer"],
+    "removes_registry": [
+      "HKLM:64:SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\AcmeDesigner"
+    ]
+  }
+}

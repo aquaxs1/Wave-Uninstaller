@@ -1,4 +1,4 @@
-import type { Architecture, InstallScope, ProgramSource } from "../types";
+import type { Architecture, Category, Confidence, InstallScope, ProgramSource } from "../types";
 
 export function formatSize(bytes: number | undefined): string {
   if (bytes === undefined || bytes <= 0) return "—";
@@ -41,4 +41,21 @@ export const SOURCE_LABEL: Record<ProgramSource, string> = {
   uninstall_key: "Registry",
   appx: "Store",
   msi: "MSI",
+};
+
+export const CATEGORY_LABEL: Record<Category, string> = {
+  install_folder: "Install folder",
+  program_folder: "Program folder",
+  app_data: "Settings and caches",
+  program_data: "Machine-wide data",
+  start_menu: "Shortcuts",
+  package_data: "Store package data",
+  registry_key: "Registry keys",
+  registry_value: "Registry values",
+};
+
+export const CONFIDENCE_LABEL: Record<Confidence, string> = {
+  safe: "Certain",
+  review: "Check this",
+  unsure: "Unsure",
 };

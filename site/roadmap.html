@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://wave-uninstaller.vercel.app/roadmap" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://wave-uninstaller.vercel.app/roadmap" />
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/img/logo.svg" />
@@ -234,8 +234,9 @@
         <div class="wrap hero__inner">
           <h1>Roadmap</h1>
           <p class="lead">
-            Six phases, one finished. P3 builds the undo that P4 depends on, so the order cannot
-            change: forced uninstallation without it is a data-loss feature.
+            Six phases. P0 and P1 are done, P2 and P3 in part — Wave removes programs and their
+            leftovers today, and every removal can be put back. The order cannot change: forced
+            uninstallation without a working undo is a data-loss feature.
           </p>
         </div>
       </section>
@@ -276,7 +277,7 @@
                   install directory and the uninstall key.
                 </p>
               </div>
-              <span class="tag tag--next">Next</span>
+              <span class="tag tag--ok">Done</span>
             </li>
             <li class="roadmap__detail">
               <span class="roadmap__phase" aria-hidden="true"></span>
@@ -286,7 +287,9 @@
                     Waits on the whole process tree: NSIS and Inno copy themselves to %TEMP% and
                     exit at once
                   </li>
-                  <li>Files move to a backup from the first release that deletes anything</li>
+                  <li>
+                    Files move to a backup — the first release that removes anything already had one
+                  </li>
                   <li>Store packages go through the package manager, not a command line</li>
                 </ul>
               </div>
@@ -300,24 +303,22 @@
                   never offer what the protection list claims.
                 </p>
               </div>
-              <span class="tag">Open</span>
+              <span class="tag tag--next">Partly</span>
             </li>
             <li class="roadmap__detail">
               <span class="roadmap__phase" aria-hidden="true"></span>
               <div class="roadmap__body">
                 <ul>
                   <li>
-                    Files: Program Files, ProgramData, AppData, temp, prefetch, shortcuts, jump
-                    lists
+                    Done: Program Files, ProgramData, AppData, start menu shortcuts, vendor keys,
+                    App Paths, startup entries
                   </li>
                   <li>
-                    Registry: vendor keys, App Paths, shared DLL refcounts, shell extensions,
-                    startup, services
+                    Done: three buckets — safe, review, unsure — each finding carrying its
+                    reasoning, and a protection list that runs before the score exists
                   </li>
-                  <li>Services and scheduled tasks through their own APIs</li>
-                  <li>
-                    Three buckets — safe, review, unsure — each finding carrying its reasoning
-                  </li>
+                  <li>Open: services and scheduled tasks through their own APIs</li>
+                  <li>Open: temp, prefetch, jump lists, shell extensions, shared DLL refcounts</li>
                 </ul>
               </div>
             </li>
@@ -330,16 +331,19 @@
                   every operation is journalled first.
                 </p>
               </div>
-              <span class="tag">Open</span>
+              <span class="tag tag--next">Partly</span>
             </li>
             <li class="roadmap__detail">
               <span class="roadmap__phase" aria-hidden="true"></span>
               <div class="roadmap__body">
                 <ul>
-                  <li>Files keep their paths, ACLs and timestamps in the backup</li>
-                  <li>Registry keys stored as JSON and as an importable .reg file</li>
-                  <li>An append-only journal means a crash mid-operation still rolls back</li>
-                  <li>Optional system restore point</li>
+                  <li>Done: files keep their path structure in the backup and move back from it</li>
+                  <li>Done: registry keys stored as JSON and as an importable .reg file</li>
+                  <li>
+                    Done: an append-only journal, written before each step rather than after, so a
+                    crash mid-operation still leaves something to undo
+                  </li>
+                  <li>Open: ACLs and timestamps, retention, an optional system restore point</li>
                 </ul>
               </div>
             </li>
@@ -386,7 +390,7 @@
           <p class="section-cta">
             <a class="btn btn--primary" href="download.html">
               <svg><use href="#i-download"></use></svg>
-              Download the P0 build
+              Download it
             </a>
           </p>
         </div>
@@ -509,7 +513,7 @@
 
         <div class="foot-bottom">
           <p>&copy; <span data-year>2026</span> AquaXS. Released under the MIT License.</p>
-          <p>Not a finished product — Wave currently only reads.</p>
+          <p>Early, unsigned, and honest about it — every removal is backed up and reversible.</p>
         </div>
       </div>
     </footer>

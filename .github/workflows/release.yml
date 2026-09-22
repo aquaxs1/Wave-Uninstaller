@@ -6,6 +6,11 @@ name: Build & release binaries
 # github.com/<repo>/releases/latest/download/<asset> always resolves to the
 # newest build — the download page links straight at those URLs and needs no
 # change when a new version ships.
+#
+# The portable build ships as a .zip as well as a bare .exe, and the download
+# page's main button points at the zip: browsers and Windows treat a directly
+# downloaded, unsigned .exe far more harshly than the same file inside an
+# archive, and Wave is unsigned until P5.
 
 on:
   push:
@@ -91,11 +96,23 @@ jobs:
           cp "$PORTABLE" "artifacts/Wave-Uninstaller-Portable-x64.exe"
           ls -la artifacts
 
+      # The zip holds the executable and the licence, nothing else: the
+      # portable build is one file, and a zip that unpacks into a folder of
+      # mystery files is not more trustworthy for it.
+      - name: Zip the portable build
+        shell: pwsh
+        run: |
+          Copy-Item LICENSE artifacts/LICENSE.txt
+          Compress-Archive -Path artifacts/Wave-Uninstaller-Portable-x64.exe, artifacts/LICENSE.txt `
+            -DestinationPath artifacts/Wave-Uninstaller-Portable-x64.zip -Force
+          Remove-Item artifacts/LICENSE.txt
+          Get-ChildItem artifacts
+
       - name: Checksums
         shell: bash
         working-directory: artifacts
         run: |
-          for FILE in *.exe; do
+          for FILE in *.exe *.zip; do
             certutil -hashfile "$FILE" SHA256 | sed -n '2p' | tr -d '\r' \
               | awk -v f="$FILE" '{print $0"  "f}' >> SHA256SUMS.txt
           done
@@ -140,15 +157,18 @@ jobs:
           body: |
             Windows build of Wave Uninstaller ${{ needs.build.outputs.version }}.
 
-            **This build only reads.** It lists what is installed on the
-            machine — registry entries, MSI products and Store packages — and
-            does nothing else. Uninstalling and leftover removal arrive in
-            later phases, deliberately after the undo that backs them out.
+            **This build removes things.** It runs a program's own uninstaller,
+            finds what was left behind, and moves it into a backup under
+            `%ProgramData%\Wave\Backups`. Nothing is deleted, every step is
+            journalled before it runs, and the Backups window puts an operation
+            back. It asks for administrator rights on start, because removing a
+            machine-wide program needs them.
 
             | File | What it is |
             | --- | --- |
+            | `Wave-Uninstaller-Portable-x64.zip` | The app itself, zipped — the download page's main button |
+            | `Wave-Uninstaller-Portable-x64.exe` | The same executable, unzipped |
             | `Wave-Uninstaller-Setup-x64.exe` | Installer |
-            | `Wave-Uninstaller-Portable-x64.exe` | The app itself, no installation |
 
             Neither is **code-signed**, so SmartScreen will warn on first
             launch: More info -> Run anyway.

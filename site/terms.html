@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://wave-uninstaller.vercel.app/terms" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://wave-uninstaller.vercel.app/terms" />
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/img/logo.svg" />
@@ -243,10 +243,10 @@
       <section>
         <div class="wrap prose">
           <p class="note note--warn">
-            <strong>Wave modifies your system.</strong> Once past the current read-only state it
-            will remove registry keys, delete files and unregister services. On the wrong entry that
-            breaks other software. Wave's backup makes every operation reversible, but a backup you
-            never test is a plan, not a guarantee — keep an independent one.
+            <strong>Wave modifies your system.</strong> It removes registry keys and moves files out
+            of the places programs install into. On the wrong entry that breaks other software.
+            Wave's backup makes every operation reversible, but a backup you never test is a plan,
+            not a guarantee — keep an independent one.
           </p>
 
           <h2>Licence</h2>
@@ -278,14 +278,25 @@
 
           <h2>What it reads</h2>
           <p>
-            The registry, the MSI product database and the installed Store packages. Later phases
-            will also walk parts of the file system. All of it stays on the machine.
+            The registry, the MSI product database, the installed Store packages, and the folders
+            programs keep their files in: <code>Program Files</code>, <code>ProgramData</code>,
+            <code>AppData</code> and the start menu. All of it stays on the machine.
+          </p>
+
+          <h2>What it writes</h2>
+          <p>
+            What you approve, and only into a backup: files and folders are moved to
+            <code>%ProgramData%\Wave\Backups</code> rather than deleted, registry keys are exported
+            there as JSON and as a <code>.reg</code> file before they are removed, and every step is
+            written to a journal before it runs. The Backups window puts an operation back. A
+            program whose own uninstaller has run is the exception — that has to be installed again.
           </p>
 
           <h2>Administrator rights</h2>
           <p>
-            Reading the inventory needs none. Removing machine-wide programs will, and Wave asks at
-            that point rather than up front.
+            Wave asks for them when it starts. Removing a machine-wide program means writing to
+            <code>HKEY_LOCAL_MACHINE</code> and to <code>Program Files</code>, and being refused
+            halfway through a removal is worse than being asked once at the beginning.
           </p>
 
           <h2>Third-party software</h2>
@@ -375,7 +386,7 @@
 
         <div class="foot-bottom">
           <p>&copy; <span data-year>2026</span> AquaXS. Released under the MIT License.</p>
-          <p>Not a finished product — Wave currently only reads.</p>
+          <p>Early, unsigned, and honest about it — every removal is backed up and reversible.</p>
         </div>
       </div>
     </footer>

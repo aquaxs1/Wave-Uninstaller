@@ -37,6 +37,12 @@ jobs:
       - name: Type-check the Windows provider
         run: cargo clippy -p wave-win32 --target x86_64-pc-windows-msvc --all-targets -- -D warnings
 
+      # wave-app cannot join in: its build script compiles a Windows resource
+      # (the icon and the manifest) with llvm-rc, which this runner does not
+      # have. It is worth running locally where llvm-rc is installed —
+      # `cargo clippy -p wave-app --target x86_64-pc-windows-msvc` catches an
+      # app-level mistake in seconds — but here the Windows job covers it.
+
   frontend:
     name: Frontend
     runs-on: ubuntu-latest

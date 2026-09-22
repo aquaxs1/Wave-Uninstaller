@@ -8,13 +8,13 @@
     <title>Wave Uninstaller — uninstall and clean up what is left</title>
     <meta
       name="description"
-      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services and startup entries. Nothing is deleted, only moved to a backup."
+      content="A Windows uninstaller that removes the leftovers too: orphaned registry keys, abandoned folders and startup entries. Nothing is deleted, only moved to a backup you can undo."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Wave Uninstaller — uninstall and clean up what is left" />
     <meta
       property="og:description"
-      content="A Windows uninstaller that also removes the leftovers: orphaned registry keys, abandoned folders, services and startup entries. Nothing is deleted, only moved to a backup."
+      content="A Windows uninstaller that removes the leftovers too: orphaned registry keys, abandoned folders and startup entries. Nothing is deleted, only moved to a backup you can undo."
     />
     <meta
       property="og:image"
@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://wave-uninstaller.vercel.app/" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://wave-uninstaller.vercel.app/" />
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/img/logo.svg" />
@@ -234,22 +234,31 @@
         <div class="wrap hero__inner">
           <p class="pill">
             <span class="pill__dot" aria-hidden="true"></span>
-            Phase P0 of 5 — reads the inventory, deletes nothing
+            Removes for real — uninstall, leftover scan, backup, undo
           </p>
 
           <h1>Uninstalling is the easy part.</h1>
 
           <p class="lead">
             The hard part is what stays behind: orphaned registry keys, folders left in
-            <code>AppData</code>, services that no longer start anything. Wave finds them — and can
-            undo every step.
+            <code>AppData</code>, startup entries that no longer start anything. Wave runs the
+            program's own uninstaller, finds what it left, and removes it — into a backup, so every
+            step can be undone.
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn--primary btn--lg" href="download.html">
+            <!-- Straight at the file, not at the download page: one click is
+                 the whole point of a download button. It is the zip rather
+                 than the bare .exe because browsers and SmartScreen treat an
+                 unsigned executable downloaded directly far more harshly. -->
+            <a
+              class="btn btn--primary btn--lg"
+              href="https://github.com/aquaxs1/Wave-uninstaller/releases/latest/download/Wave-Uninstaller-Portable-x64.zip"
+            >
               <svg><use href="#i-download"></use></svg>
-              Download for Windows
+              Download for Windows &middot; .zip
             </a>
+            <a class="btn btn--lg" href="download.html">Installer and checksums</a>
             <a
               class="btn btn--lg"
               href="https://github.com/aquaxs1/Wave-uninstaller"
@@ -262,6 +271,7 @@
 
           <p class="hero-note">
             Windows 10 (1809+) and 11 &middot; x64 &middot; free and MIT licensed &middot; unsigned
+            &middot; unzip and run, nothing to install
           </p>
         </div>
       </section>
@@ -285,7 +295,7 @@
         <div class="wrap">
           <div class="section-head">
             <h2>What Wave does</h2>
-            <p>One of these three works today. The card says which.</p>
+            <p>All three work today. The card says how far each one goes.</p>
           </div>
 
           <div class="cards">
@@ -303,20 +313,21 @@
               <svg class="card__icon"><use href="#i-broom"></use></svg>
               <h3>Cleans up afterwards</h3>
               <p>
-                What the uninstaller left: folders, registry keys, services, scheduled tasks,
-                startup entries, shortcuts.
+                What the uninstaller left: folders in <code>Program Files</code>,
+                <code>ProgramData</code> and <code>AppData</code>, registry keys, startup entries,
+                shortcuts. Services and scheduled tasks still to come.
               </p>
-              <span class="tag">Planned — P2</span>
+              <span class="tag tag--ok">Done</span>
             </article>
 
             <article class="card">
               <svg class="card__icon"><use href="#i-undo"></use></svg>
               <h3>Takes it all back</h3>
               <p>
-                Every deletion goes to a backup first, and every operation is journalled before it
-                runs.
+                Every removal goes to a backup first, every step is journalled before it runs, and
+                the Backups window puts an operation back.
               </p>
-              <span class="tag">Planned — P3</span>
+              <span class="tag tag--ok">Done</span>
             </article>
           </div>
         </div>
@@ -382,21 +393,37 @@
               </div>
               <span class="tag tag--ok">Done</span>
             </li>
-            <li>
+            <li data-done>
               <span class="roadmap__phase">P1</span>
               <div class="roadmap__body">
                 <h3>Uninstalling</h3>
-                <p>Run the native uninstaller, then remove the obvious leftovers.</p>
+                <p>
+                  Run the native uninstaller, wait for its whole process tree, remove what it left.
+                </p>
               </div>
-              <span class="tag tag--next">Next</span>
+              <span class="tag tag--ok">Done</span>
             </li>
             <li>
               <span class="roadmap__phase">P2</span>
               <div class="roadmap__body">
                 <h3>The scan</h3>
-                <p>Full search, a score per finding, a hard protection list.</p>
+                <p>
+                  Files and registry are searched, scored and filtered by a protection list.
+                  Services and scheduled tasks still to come.
+                </p>
               </div>
-              <span class="tag">Open</span>
+              <span class="tag tag--next">Partly</span>
+            </li>
+            <li>
+              <span class="roadmap__phase">P3</span>
+              <div class="roadmap__body">
+                <h3>Undo</h3>
+                <p>
+                  Backup and journal are written before anything moves, and put it all back. Restore
+                  points still to come.
+                </p>
+              </div>
+              <span class="tag tag--next">Partly</span>
             </li>
           </ol>
 
@@ -469,7 +496,7 @@
 
         <div class="foot-bottom">
           <p>&copy; <span data-year>2026</span> AquaXS. Released under the MIT License.</p>
-          <p>Not a finished product — Wave currently only reads.</p>
+          <p>Early, unsigned, and honest about it — every removal is backed up and reversible.</p>
         </div>
       </div>
     </footer>
