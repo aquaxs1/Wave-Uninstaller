@@ -96,11 +96,14 @@ The rules that follow from it are in [`CLAUDE.md`](./CLAUDE.md).
 
 ## Download
 
-Windows builds — installer or portable — are on the
+Windows builds are on the
 [releases page](https://github.com/aquaxs1/Wave-uninstaller/releases/latest),
 built by [`release.yml`](./.github/workflows/release.yml) and linked from the
-[download page](https://github.com/aquaxs1/Wave-uninstaller/blob/main/site/download.html).
-They are not code-signed, so SmartScreen warns on first launch.
+[download page](https://github.com/aquaxs1/Wave-uninstaller/blob/main/site/download.html):
+an installer, the portable executable, and that same executable zipped —
+which is what the site's download button serves, because browsers and
+SmartScreen are considerably harder on an unsigned `.exe` downloaded directly.
+Nothing is code-signed yet, so SmartScreen warns on first launch either way.
 
 Remember what this build is: it removes programs for real, and it has not been
 through wide testing on real machines. Everything it removes is recoverable from

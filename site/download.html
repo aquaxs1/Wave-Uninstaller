@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://wave-uninstaller.vercel.app/download" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://wave-uninstaller.vercel.app/download" />
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/img/logo.svg" />
@@ -242,13 +242,12 @@
       <section>
         <div class="wrap">
           <p class="note note--warn">
-            <strong>This build removes things.</strong> It runs a program's uninstaller and
-            then moves the leftovers it finds — folders, registry keys, startup entries — into a
-            backup under <code>%ProgramData%\Wave\Backups</code>. Nothing is deleted, every step
-            is journalled before it runs, and every removal can be put back from the Backups
-            window. It asks for administrator rights on start, because removing a machine-wide
-            program needs them. It is early software: read what it proposes before you approve
-            it.
+            <strong>This build removes things.</strong> It runs a program's uninstaller and then
+            moves the leftovers it finds — folders, registry keys, startup entries — into a backup
+            under <code>%ProgramData%\Wave\Backups</code>. Nothing is deleted, every step is
+            journalled before it runs, and every removal can be put back from the Backups window. It
+            asks for administrator rights on start, because removing a machine-wide program needs
+            them. It is early software: read what it proposes before you approve it.
           </p>
 
           <div class="cards" id="builds">
@@ -271,16 +270,25 @@
               <h3>Portable</h3>
               <p>
                 One executable, nothing installed. Fitting for a tool whose job is removing
-                installations.
+                installations. Unzip it anywhere and run it.
               </p>
-              <p class="build-meta">Windows x64 &middot; unsigned</p>
+              <p class="build-meta">
+                Windows x64 &middot; unsigned &middot; the zip holds the executable and the licence
+              </p>
               <a
-                class="btn btn--block"
-                href="https://github.com/aquaxs1/Wave-uninstaller/releases/latest/download/Wave-Uninstaller-Portable-x64.exe"
+                class="btn btn--primary btn--block"
+                href="https://github.com/aquaxs1/Wave-uninstaller/releases/latest/download/Wave-Uninstaller-Portable-x64.zip"
               >
                 <svg><use href="#i-download"></use></svg>
-                Portable .exe
+                Portable .zip
               </a>
+              <p class="build-meta">
+                Or the
+                <a
+                  href="https://github.com/aquaxs1/Wave-uninstaller/releases/latest/download/Wave-Uninstaller-Portable-x64.exe"
+                  >bare .exe</a
+                >, if your browser will let you keep it.
+              </p>
             </article>
           </div>
 
@@ -306,9 +314,11 @@
           </p>
 
           <h2>Verify the file</h2>
-          <p>Every release ships <code>SHA256SUMS.txt</code>. In PowerShell:</p>
+          <p>
+            Every release ships <code>SHA256SUMS.txt</code>, covering the zip too. In PowerShell:
+          </p>
           <div class="code">
-            <pre><code>Get-FileHash .\Wave-Uninstaller-Setup-x64.exe -Algorithm SHA256</code></pre>
+            <pre><code>Get-FileHash .\Wave-Uninstaller-Portable-x64.zip -Algorithm SHA256</code></pre>
           </div>
           <p>Compare the result with the line for that file in the checksum list.</p>
 

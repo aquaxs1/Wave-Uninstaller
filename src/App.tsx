@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { History } from "./components/History";
+import { Logo } from "./components/Logo";
 import { ProgramDetail } from "./components/ProgramDetail";
 import { ProgramTable, type SortKey } from "./components/ProgramTable";
 import { RemovalPanel } from "./components/RemovalPanel";
@@ -104,6 +105,8 @@ export function App() {
   return (
     <div className="relative flex h-full flex-col">
       <header className="border-line flex items-center gap-3 border-b px-4 py-3">
+        <Logo className="text-wave size-7 shrink-0" />
+
         <div className="flex-1">
           <h1 className="text-[15px] font-semibold">Wave Uninstaller</h1>
           <p className="text-muted text-[12px]">

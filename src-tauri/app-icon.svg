@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Wave Uninstaller">
+  <title>Wave Uninstaller</title>
+  <!--
+    The source the icons in this folder are generated from:
+
+        npx tauri icon src-tauri/app-icon.svg
+
+    It is the same drawing as site/assets/img/logo.svg and the app header's
+    Logo component, on the dark square an icon needs to stay readable on a
+    taskbar. Change it here rather than editing the generated PNGs.
+  -->
+  <rect width="1024" height="1024" rx="228" fill="#0b1220" />
+  <g
+    transform="translate(152 170) scale(3.6)"
+    fill="none"
+    stroke="#38bdf8"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  >
+    <!-- the crest -->
+    <path d="M18 108c20-30 40-30 60 0s40 30 60 0 30-22 44-8" stroke-width="14" />
+    <!-- the trough below it, lighter, to read as water rather than a squiggle -->
+    <path d="M18 146c20-30 40-30 60 0s40 30 60 0 30-22 44-8" stroke-width="8" opacity="0.45" />
+    <!-- what is being swept away -->
+    <path d="M62 60h76" stroke-width="10" />
+    <path d="M74 60V44a8 8 0 0 1 8-8h36a8 8 0 0 1 8 8v16" stroke-width="10" />
+  </g>
+</svg>

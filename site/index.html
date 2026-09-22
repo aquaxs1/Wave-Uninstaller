@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://wave-uninstaller.vercel.app/" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://wave-uninstaller.vercel.app/" />
     <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="assets/img/logo.svg" />
@@ -242,15 +242,23 @@
           <p class="lead">
             The hard part is what stays behind: orphaned registry keys, folders left in
             <code>AppData</code>, startup entries that no longer start anything. Wave runs the
-            program's own uninstaller, finds what it left, and removes it — into a backup, so
-            every step can be undone.
+            program's own uninstaller, finds what it left, and removes it — into a backup, so every
+            step can be undone.
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn--primary btn--lg" href="download.html">
+            <!-- Straight at the file, not at the download page: one click is
+                 the whole point of a download button. It is the zip rather
+                 than the bare .exe because browsers and SmartScreen treat an
+                 unsigned executable downloaded directly far more harshly. -->
+            <a
+              class="btn btn--primary btn--lg"
+              href="https://github.com/aquaxs1/Wave-uninstaller/releases/latest/download/Wave-Uninstaller-Portable-x64.zip"
+            >
               <svg><use href="#i-download"></use></svg>
-              Download for Windows
+              Download for Windows &middot; .zip
             </a>
+            <a class="btn btn--lg" href="download.html">Installer and checksums</a>
             <a
               class="btn btn--lg"
               href="https://github.com/aquaxs1/Wave-uninstaller"
@@ -263,6 +271,7 @@
 
           <p class="hero-note">
             Windows 10 (1809+) and 11 &middot; x64 &middot; free and MIT licensed &middot; unsigned
+            &middot; unzip and run, nothing to install
           </p>
         </div>
       </section>
@@ -410,8 +419,8 @@
               <div class="roadmap__body">
                 <h3>Undo</h3>
                 <p>
-                  Backup and journal are written before anything moves, and put it all back.
-                  Restore points still to come.
+                  Backup and journal are written before anything moves, and put it all back. Restore
+                  points still to come.
                 </p>
               </div>
               <span class="tag tag--next">Partly</span>
