@@ -37,6 +37,18 @@ jobs:
       - name: Type-check the Windows provider
         run: cargo clippy -p wave-win32 --target x86_64-pc-windows-msvc --all-targets -- -D warnings
 
+      # The app is the crate that calls both of them, and a mistake there would
+      # otherwise only surface twelve minutes later on the Windows runner.
+      # tauri-build embeds dist/, so the frontend has to exist first.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Type-check the app
+        run: cargo clippy -p wave-app --target x86_64-pc-windows-msvc --all-targets -- -D warnings
+
   frontend:
     name: Frontend
     runs-on: ubuntu-latest

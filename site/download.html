@@ -8,13 +8,13 @@
     <title>Download — Wave Uninstaller</title>
     <meta
       name="description"
-      content="Download Wave Uninstaller for Windows. Installer or portable executable, free and MIT licensed. This build reads the installed-program inventory and deletes nothing."
+      content="Download Wave Uninstaller for Windows. Installer or portable executable, free and MIT licensed. Uninstalls programs and removes what they leave behind, into a backup you can undo."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Download — Wave Uninstaller" />
     <meta
       property="og:description"
-      content="Download Wave Uninstaller for Windows. Installer or portable executable, free and MIT licensed. This build reads the installed-program inventory and deletes nothing."
+      content="Download Wave Uninstaller for Windows. Installer or portable executable, free and MIT licensed. Uninstalls programs and removes what they leave behind, into a backup you can undo."
     />
     <meta
       property="og:image"
@@ -242,9 +242,13 @@
       <section>
         <div class="wrap">
           <p class="note note--warn">
-            <strong>This build only reads.</strong> It lists what is installed and does nothing
-            else. Uninstalling arrives in P1, leftover removal in P2 — deliberately after the undo
-            that backs them out. Install it to look around, not to clean anything up yet.
+            <strong>This build removes things.</strong> It runs a program's uninstaller and
+            then moves the leftovers it finds — folders, registry keys, startup entries — into a
+            backup under <code>%ProgramData%\Wave\Backups</code>. Nothing is deleted, every step
+            is journalled before it runs, and every removal can be put back from the Backups
+            window. It asks for administrator rights on start, because removing a machine-wide
+            program needs them. It is early software: read what it proposes before you approve
+            it.
           </p>
 
           <div class="cards" id="builds">
@@ -386,7 +390,7 @@ npm run tauri build</code></pre>
 
         <div class="foot-bottom">
           <p>&copy; <span data-year>2026</span> AquaXS. Released under the MIT License.</p>
-          <p>Not a finished product — Wave currently only reads.</p>
+          <p>Early, unsigned, and honest about it — every removal is backed up and reversible.</p>
         </div>
       </div>
     </footer>

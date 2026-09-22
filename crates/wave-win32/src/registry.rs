@@ -26,7 +26,7 @@ impl Drop for OpenKey {
     }
 }
 
-fn hive(root: RegistryRoot) -> HKEY {
+pub(crate) fn hive(root: RegistryRoot) -> HKEY {
     match root {
         RegistryRoot::LocalMachine => HKEY_LOCAL_MACHINE,
         RegistryRoot::CurrentUser => HKEY_CURRENT_USER,

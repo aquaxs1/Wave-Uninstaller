@@ -46,6 +46,12 @@ directly; it goes through that trait. Which gives two implementations:
 - `FixtureProvider` — reads an invented registry and file system state from a
   JSON file
 
+Writing is a second trait, `SystemMutator`, for the same reason twice over: the
+scan is handed the reader alone and so cannot change anything, and the removal
+logic can be tested against a fixture that really moves its paths and really
+drops its keys. `FixtureProvider::mutator()` returns exactly that, which is how
+the undo tests assert that a machine ends up the way it started.
+
 Without it the scan and scoring logic could not be tested at all: in CI, on
 Linux, deterministically, with no VM and no real installation. This is not
 architectural decoration — without that cut, every test of the core is a manual
@@ -60,7 +66,7 @@ click in a virtual machine.
 | `serde` / `serde_json` | Models, journal, fixtures |
 | `jwalk` | Parallel directory walk |
 | `rayon` | Parallel scoring |
-| `strsim` | Fuzzy name comparison (Jaro-Winkler) |
+| ~~`strsim`~~ | Fuzzy name comparison — written out in `text.rs` instead: forty lines, used for one comparison, and a signal that decides whether a folder is removed should be readable in the repository that removes it |
 | `rusqlite` | Scan cache and backup index |
 | `zip` | Backup archives |
 | `tracing` + `tracing-appender` | Structured logs on disk |
@@ -304,8 +310,12 @@ React + TypeScript + Tailwind, Vite as the bundler.
 Progress arrives as a stream of Tauri events, not as one command that blocks
 for two minutes.
 
-On first start **dry run** is active: Wave shows what it would do and deletes
-nothing. It has to be switched off deliberately, once.
+There is no global dry-run switch, and deliberately so: a mode that has to be
+turned off once is a mode people forget the state of. Instead every removal goes
+through the same three steps — scan, review, apply — and the review step shows
+the concrete plan, each finding with its reasoning, before anything is touched.
+Nothing is ticked in advance that Wave is not sure about, and the button says
+what it is about to move.
 
 ---
 
@@ -336,15 +346,17 @@ CI: `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`,
 
 | Phase | Content | Result |
 |---|---|---|
-| **P0** | Tauri scaffold, manifest, CI, logging, the `SystemProvider` trait, inventory from all four sources | A read-only browser of every installed program. Deletes nothing, but is usable at once. |
-| **P1** | Start the native uninstaller, wait on a job object, scan the `InstallLocation`, remove the uninstall key, back up files | A program can be uninstalled and the obvious leftovers disappear. |
-| **P2** | The full scan (registry breadth, services, tasks, shortcuts), scoring, protection list | The actual feature. From here on it competes with Revo. |
-| **P3** | Journal, undo, restore points, backup management | The safety net, complete. |
+| **P0** ✅ | Tauri scaffold, manifest, CI, logging, the `SystemProvider` trait, inventory from all four sources | A read-only browser of every installed program. Deletes nothing, but is usable at once. |
+| **P1** ✅ | Start the native uninstaller, wait on a job object, scan the `InstallLocation`, remove the uninstall key, back up files | A program can be uninstalled and the obvious leftovers disappear. |
+| **P2** ◐ | The full scan (registry breadth, services, tasks, shortcuts), scoring, protection list | Files, vendor keys, `App Paths`, startup values, start menu shortcuts, scoring and the protection list are in. Services, scheduled tasks, shell extensions, prefetch and jump lists are not. |
+| **P3** ◐ | Journal, undo, restore points, backup management | Backup, journal and undo are in, and were built together with P1 rather than after it — removing without them was never an option. Restore points, retention and ACL-preserving copies are not. |
 | **P4** | Junk hunter (find leftovers with no uninstall), startup manager, service and task views, forced uninstall when the uninstaller is broken | The extras people buy Revo for. |
 | **P5** | i18n (de/en), code signing, an installer (WiX), the Tauri updater | Shippable. |
 
 The order is not negotiable: P3 must come before P4. Forced uninstallation
-without a working undo is a data-loss feature.
+without a working undo is a data-loss feature — which is why the backup, the
+journal and the undo shipped with P1 instead of waiting for a phase of their
+own.
 
 ---
 
@@ -388,7 +400,11 @@ phones home does not deserve trust.
 
 ## Next step
 
-P0. Concretely: set up the Tauri scaffold, define `SystemProvider`, read the
-inventory from registry + MSI + AppX and show it as a sortable list. That is
-self-contained, deletes nothing, and still pins down the abstraction everything
-else hangs off.
+The rest of P2. Concretely: services through the SCM and scheduled tasks through
+`ITaskService`, both of which need new calls in `wave-win32` and new fixture
+shapes in `wave-core` — and `MsiEnumComponents` + `MsiGetComponentPath`, which is
+the one source that knows without guessing which file belongs to which product
+and therefore outranks every heuristic in the scoring table.
+
+After that, the rest of P3: ACLs and timestamps in the backup, retention, and an
+optional system restore point before a removal.

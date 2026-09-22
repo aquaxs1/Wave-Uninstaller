@@ -233,6 +233,137 @@ fn find_common_name(subject: &str) -> Option<usize> {
     None
 }
 
+/// How closely a folder or key name resembles a program or vendor name.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum NameMatch {
+    /// The names normalize to the same string.
+    Exact,
+    /// One name's tokens are all contained in the other's — a folder called
+    /// `7-Zip` for a product called `7-Zip 24.09 (x64)`.
+    Tokens,
+    /// Close enough that a typo or a dropped word is the likely explanation.
+    Fuzzy,
+}
+
+/// Whether `candidate` — a folder or key name — names the same thing as
+/// `reference`.
+///
+/// Both sides go through [`normalize_product_name`] first, so punctuation,
+/// case and build markers do not decide the outcome. Returns `None` when the
+/// two have nothing meaningful in common.
+pub fn match_name(candidate: &str, reference: &str) -> Option<NameMatch> {
+    let candidate = normalize_product_name(candidate);
+    let reference = normalize_product_name(reference);
+    if candidate.is_empty() || reference.is_empty() {
+        return None;
+    }
+    if candidate == reference {
+        return Some(NameMatch::Exact);
+    }
+
+    let candidate_tokens: Vec<&str> = candidate.split(' ').filter(|t| !t.is_empty()).collect();
+    let reference_tokens: Vec<&str> = reference.split(' ').filter(|t| !t.is_empty()).collect();
+
+    // A subset match only means something if what matched carries enough
+    // letters to identify anything. `bin` inside `bin utils` does not.
+    let contained = |small: &[&str], large: &[&str]| {
+        let letters: usize = small.iter().map(|token| token.len()).sum();
+        letters >= 4 && small.iter().all(|token| large.contains(token))
+    };
+    if contained(&candidate_tokens, &reference_tokens)
+        || contained(&reference_tokens, &candidate_tokens)
+    {
+        return Some(NameMatch::Tokens);
+    }
+
+    // Compared without the spaces: `AcmeDesigner` as a folder for
+    // `Acme Designer` is the same name, not a similar one.
+    let joined_candidate: String = candidate_tokens.concat();
+    let joined_reference: String = reference_tokens.concat();
+    if joined_candidate == joined_reference {
+        return Some(NameMatch::Exact);
+    }
+    if jaro_winkler(&joined_candidate, &joined_reference) >= 0.92 {
+        return Some(NameMatch::Fuzzy);
+    }
+
+    None
+}
+
+/// Jaro-Winkler similarity, between 0 and 1.
+///
+/// Written out rather than pulled in as a dependency: it is forty lines, it is
+/// used for one comparison, and a scoring signal that decides whether a folder
+/// is deleted should be readable in the repository that deletes it.
+pub fn jaro_winkler(left: &str, right: &str) -> f64 {
+    let jaro = jaro(left, right);
+    if jaro < 0.7 {
+        return jaro;
+    }
+
+    let left: Vec<char> = left.chars().collect();
+    let right: Vec<char> = right.chars().collect();
+    let prefix = left.iter().zip(right.iter()).take(4).take_while(|(a, b)| a == b).count();
+
+    jaro + (prefix as f64 * 0.1 * (1.0 - jaro))
+}
+
+fn jaro(left: &str, right: &str) -> f64 {
+    let left: Vec<char> = left.chars().collect();
+    let right: Vec<char> = right.chars().collect();
+    if left.is_empty() && right.is_empty() {
+        return 1.0;
+    }
+    if left.is_empty() || right.is_empty() {
+        return 0.0;
+    }
+
+    // Two characters count as the same only if they are near each other.
+    let window = (left.len().max(right.len()) / 2).saturating_sub(1);
+    let mut left_matched = vec![false; left.len()];
+    let mut right_matched = vec![false; right.len()];
+    let mut matches = 0usize;
+
+    for (index, ch) in left.iter().enumerate() {
+        let start = index.saturating_sub(window);
+        let end = (index + window + 1).min(right.len());
+        for offset in start..end {
+            if !right_matched[offset] && right[offset] == *ch {
+                left_matched[index] = true;
+                right_matched[offset] = true;
+                matches += 1;
+                break;
+            }
+        }
+    }
+
+    if matches == 0 {
+        return 0.0;
+    }
+
+    let mut transpositions = 0usize;
+    let mut right_index = 0usize;
+    for (index, matched) in left_matched.iter().enumerate() {
+        if !matched {
+            continue;
+        }
+        while !right_matched[right_index] {
+            right_index += 1;
+        }
+        if left[index] != right[right_index] {
+            transpositions += 1;
+        }
+        right_index += 1;
+    }
+
+    let matches = matches as f64;
+    let transpositions = (transpositions / 2) as f64;
+    (matches / left.len() as f64
+        + matches / right.len() as f64
+        + (matches - transpositions) / matches)
+        / 3.0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -312,5 +443,29 @@ mod tests {
         assert_eq!(normalize_install_date("20251345"), None);
         assert_eq!(normalize_install_date("14.01.2025"), None);
         assert_eq!(normalize_install_date(""), None);
+    }
+
+    #[test]
+    fn folder_names_are_matched_against_product_names() {
+        // The everyday case: the folder keeps the bare name, the registry
+        // entry carries the version.
+        assert_eq!(match_name("7-Zip", "7-Zip 24.09 (x64)"), Some(NameMatch::Tokens));
+        assert_eq!(match_name("Acme Designer", "Acme Designer"), Some(NameMatch::Exact));
+        assert_eq!(match_name("AcmeDesigner", "Acme Designer"), Some(NameMatch::Exact));
+        assert_eq!(match_name("Notepad++", "Notepad++ (32-bit x86)"), Some(NameMatch::Exact));
+    }
+
+    #[test]
+    fn unrelated_names_do_not_match() {
+        assert_eq!(match_name("Windows Defender", "Acme Designer"), None);
+        assert_eq!(match_name("bin", "bin utils"), None, "three letters identify nothing");
+        assert_eq!(match_name("", "Acme"), None);
+    }
+
+    #[test]
+    fn a_near_miss_is_recognized_but_not_as_an_exact_name() {
+        assert_eq!(match_name("Acme Desginer", "Acme Designer"), Some(NameMatch::Fuzzy));
+        assert!(jaro_winkler("acmedesigner", "acmedesginer") > 0.95);
+        assert!(jaro_winkler("acme", "zulu") < 0.5);
     }
 }

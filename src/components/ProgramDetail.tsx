@@ -19,7 +19,15 @@ function Field({ label, value, mono }: { label: string; value?: string; mono?: b
   );
 }
 
-export function ProgramDetail({ program, onClose }: { program: Program; onClose: () => void }) {
+export function ProgramDetail({
+  program,
+  onClose,
+  onRemove,
+}: {
+  program: Program;
+  onClose: () => void;
+  onRemove: () => void;
+}) {
   const architecture = ARCHITECTURE_LABEL[program.architecture];
 
   return (
@@ -69,8 +77,19 @@ export function ProgramDetail({ program, onClose }: { program: Program; onClose:
         <Field label="Wave id" value={program.id} mono />
       </div>
 
-      <footer className="border-line text-muted border-t px-4 py-3 text-[12px]">
-        Uninstalling arrives in the next milestone. This build only reads.
+      <footer className="border-line border-t px-4 py-3">
+        <button
+          type="button"
+          onClick={onRemove}
+          className="bg-wave/15 border-wave/40 text-wave hover:bg-wave/25 w-full rounded border px-3 py-2 text-[13px]"
+        >
+          Uninstall and clean up
+        </button>
+        <p className="text-muted mt-2 text-[11px]">
+          {program.kind === "application"
+            ? "Wave shows what it found before it removes anything, and moves it to a backup rather than deleting it."
+            : "Other programs depend on this entry. Wave will show what it found, but think twice."}
+        </p>
       </footer>
     </aside>
   );
