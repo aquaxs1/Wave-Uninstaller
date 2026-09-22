@@ -84,7 +84,7 @@ pub struct Score {
 
 /// Add up the evidence, strongest reason first.
 pub fn weigh(mut evidence: Vec<Evidence>) -> Score {
-    evidence.sort_by(|a, b| b.weight.cmp(&a.weight));
+    evidence.sort_by_key(|item| std::cmp::Reverse(item.weight));
 
     let total: i32 = evidence.iter().map(|item| item.weight).sum();
     let value = total.clamp(0, 100) as u8;
