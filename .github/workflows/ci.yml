@@ -37,17 +37,11 @@ jobs:
       - name: Type-check the Windows provider
         run: cargo clippy -p wave-win32 --target x86_64-pc-windows-msvc --all-targets -- -D warnings
 
-      # The app is the crate that calls both of them, and a mistake there would
-      # otherwise only surface twelve minutes later on the Windows runner.
-      # tauri-build embeds dist/, so the frontend has to exist first.
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - name: Type-check the app
-        run: cargo clippy -p wave-app --target x86_64-pc-windows-msvc --all-targets -- -D warnings
+      # wave-app cannot join in: its build script compiles a Windows resource
+      # (the icon and the manifest) with llvm-rc, which this runner does not
+      # have. It is worth running locally where llvm-rc is installed —
+      # `cargo clippy -p wave-app --target x86_64-pc-windows-msvc` catches an
+      # app-level mistake in seconds — but here the Windows job covers it.
 
   frontend:
     name: Frontend
