@@ -26,16 +26,10 @@ security headers, including a CSP with no inline script or style. Keep it that
 way: an inline `style=` attribute or `<script>` block is silently dropped by the
 browser once the site is live, which is a miserable thing to debug.
 
-## Deploy to GitHub Pages
-
-[`.github/workflows/pages.yml`](../.github/workflows/pages.yml) publishes this
-folder on every push to `main` that touches it. It needs
-_Settings → Pages → Build and deployment_ set to **GitHub Actions** — the
-alternative, "deploy from a branch", can only serve `/` or `/docs` and would
-never find this folder.
-
-Pages is a mirror. Vercel is the canonical host, which is what the `canonical`
-links, the Open Graph URLs and `sitemap.xml` point at.
+Vercel is the only host, and the `canonical` links, the Open Graph URLs and
+`sitemap.xml` point at it. (There used to be a GitHub Pages mirror workflow; it
+was removed because Pages was never enabled for the repository. If you add
+another host, name it in the privacy section of `terms.html`.)
 
 ## The download links
 
