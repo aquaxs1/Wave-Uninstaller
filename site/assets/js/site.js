@@ -12,7 +12,7 @@ function resolveTheme(choice) {
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function applyTheme(choice) {
+function applyTheme(choice, remember = false) {
   const resolved = resolveTheme(choice);
   document.documentElement.dataset.theme = resolved;
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
@@ -23,6 +23,8 @@ function applyTheme(choice) {
     const use = button.querySelector("use");
     if (use) use.setAttribute("href", resolved === "dark" ? "#i-sun" : "#i-moon");
   });
+  // Only a click on the toggle is remembered; until then nothing is stored.
+  if (!remember) return;
   try {
     localStorage.setItem(THEME_KEY, choice);
   } catch {
@@ -41,7 +43,7 @@ function initTheme() {
 
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
-      applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+      applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
     });
   });
 }
