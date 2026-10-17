@@ -7,7 +7,6 @@
 **Uninstalling is the easy part. The hard part is what stays behind.**
 
 [![CI](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/ci.yml/badge.svg)](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/ci.yml)
-[![Website](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/pages.yml/badge.svg)](https://github.com/aquaxs1/Wave-uninstaller/actions/workflows/pages.yml)
 [![Phase](https://img.shields.io/badge/phase-P1%20done%2C%20P2%E2%80%93P3%20in%20part-5a5a63)](#where-the-project-stands)
 [![License](https://img.shields.io/badge/license-MIT-5a5a63)](./LICENSE)
 
@@ -156,8 +155,8 @@ entirely `#[cfg(windows)]` — the Windows job in CI covers both.
 ## Website
 
 The project site lives in [`site/`](./site) as static HTML with no build step.
-Deploy it by pointing a host's root directory at `site`; details, including the
-GitHub Pages workflow, are in [`site/README.md`](./site/README.md).
+It is deployed on Vercel with the root directory set to `site`; details are in
+[`site/README.md`](./site/README.md).
 
 ## License
 
