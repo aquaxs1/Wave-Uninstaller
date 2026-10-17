@@ -657,6 +657,11 @@ section {
   margin-top: 0;
 }
 
+.prose h3 {
+  margin-top: 1.75rem;
+  font-size: 1.05rem;
+}
+
 .prose p,
 .prose li {
   color: var(--text-muted);

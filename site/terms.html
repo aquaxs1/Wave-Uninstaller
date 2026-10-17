@@ -8,13 +8,13 @@
     <title>Terms of Use — Wave Uninstaller</title>
     <meta
       name="description"
-      content="Terms of use for Wave Uninstaller: MIT licensed, provided as is, no warranty, no telemetry."
+      content="Terms of use and privacy for Wave Uninstaller: MIT licensed, provided as is, no warranty, no telemetry."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Terms of Use — Wave Uninstaller" />
     <meta
       property="og:description"
-      content="Terms of use for Wave Uninstaller: MIT licensed, provided as is, no warranty, no telemetry."
+      content="Terms of use and privacy for Wave Uninstaller: MIT licensed, provided as is, no warranty, no telemetry."
     />
     <meta
       property="og:image"
@@ -234,7 +234,7 @@
         <div class="wrap hero__inner">
           <h1>Terms of Use</h1>
           <p class="lead">
-            Last updated <time datetime="2026-09-07">7 September 2026</time>. Wave Uninstaller is
+            Last updated <time datetime="2026-10-16">16 October 2026</time>. Wave Uninstaller is
             MIT-licensed free software. This restates what that means for someone running it.
           </p>
         </div>
@@ -271,10 +271,7 @@
             Nothing. No telemetry, no analytics, no crash reporting, no account, no network requests
             of its own. A program with system privileges that phones home does not deserve trust.
           </p>
-          <p>
-            This site is equally quiet: no cookies, no analytics, no third-party requests. Your
-            theme choice stays in your browser.
-          </p>
+          <p>What this site does with your visit is under <a href="#privacy">Privacy</a> below.</p>
 
           <h2>What it reads</h2>
           <p>
@@ -311,12 +308,68 @@
             this page; the history is in the repository.
           </p>
 
+          <h2 id="privacy">Privacy</h2>
+
+          <h3>Who is responsible</h3>
+          <p>
+            Wave Uninstaller and this site are run by Sebi. For anything about your data, message
+            <a href="https://t.me/aquaxs" rel="noopener">@aquaxs on Telegram</a>.
+          </p>
+
+          <h3>The program</h3>
+          <p>
+            Everything Wave reads and writes stays on your machine. None of it is sent anywhere, and
+            Sebi never receives any of it. The backups and journals in
+            <code>%ProgramData%\Wave\Backups</code> record each removal and can contain files of the
+            removed program, including what it kept in your user profile. Wave never deletes them on
+            its own: they stay until you delete the folder. Wave has no account and writes no log
+            file.
+          </p>
+
+          <h3>This website</h3>
+          <ul>
+            <li>
+              <strong>Hosting.</strong> The site is hosted by Vercel Inc. (USA), which processes
+              connection data (IP address, time, requested file, browser) to deliver the pages and
+              protect them against abuse. Legal basis: legitimate interest, Art. 6(1)(f) GDPR.
+              Vercel is certified under the EU-US Data Privacy Framework. If you open the site
+              through its GitHub Pages mirror instead, GitHub Inc. (USA, also certified) is the host
+              and processes the same data.
+            </li>
+            <li>
+              <strong>No cookies, no tracking.</strong> No analytics, no ads, no embeds and no
+              external fonts. Every page loads only files from this site.
+            </li>
+            <li>
+              <strong>In your browser.</strong> One <code>localStorage</code> entry,
+              <code>wave-site-theme</code>, remembers the light, dark or system theme so the next
+              page opens the same way. It never leaves your browser.
+            </li>
+            <li>
+              <strong>Downloads.</strong> The download buttons fetch the files from GitHub's release
+              storage, so GitHub Inc. (USA) receives your IP address, as any server you download
+              from does. GitHub is certified under the EU-US Data Privacy Framework. The links to
+              the source, the plan and the issue tracker open GitHub, where its own privacy
+              statement applies.
+            </li>
+          </ul>
+
+          <h3>Your rights</h3>
+          <p>
+            You can ask for access to your data, correction, deletion, restriction, a copy, and
+            object to processing based on legitimate interest (Art. 15–21 GDPR) — message
+            <a href="https://t.me/aquaxs" rel="noopener">@aquaxs on Telegram</a>. You can also
+            complain to a data protection authority; in Austria that is the
+            <a href="https://www.dsb.gv.at" rel="noopener">Datenschutzbehörde</a>.
+          </p>
+
           <h2>Contact</h2>
           <p>
             Questions and problems belong in the
             <a href="https://github.com/aquaxs1/Wave-uninstaller/issues" rel="noopener"
               >issue tracker</a
-            >.
+            >. Privacy questions and data requests go to Sebi on Telegram,
+            <a href="https://t.me/aquaxs" rel="noopener">@aquaxs</a>.
           </p>
         </div>
       </section>
@@ -380,6 +433,7 @@
                 >
               </li>
               <li><a href="terms.html">Terms of Use</a></li>
+              <li><a href="terms.html#privacy">Privacy</a></li>
             </ul>
           </div>
         </div>

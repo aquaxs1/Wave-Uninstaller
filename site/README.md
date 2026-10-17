@@ -63,7 +63,7 @@ four together if the site ever moves:
 | `index.html` | Landing page — what it does, why it is safe, where it stands |
 | `download.html` | The Windows builds, plus checksums and how to build it yourself |
 | `roadmap.html` | All six phases in detail, plus how the code is laid out |
-| `terms.html` | Terms of Use |
+| `terms.html` | Terms of Use and privacy |
 | `404.html` | Not found |
 
 ## Assets
