@@ -1,522 +1,236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#ffffff" />
-    <title>Roadmap — Wave Uninstaller</title>
-    <meta
-      name="description"
-      content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Roadmap — Wave Uninstaller" />
-    <meta
-      property="og:description"
-      content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature."
-    />
-    <meta
-      property="og:image"
-      content="https://wave-uninstaller.vercel.app/assets/img/og-image.png"
-    />
-    <meta property="og:url" content="https://wave-uninstaller.vercel.app/roadmap" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://wave-uninstaller.vercel.app/roadmap" />
-    <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="assets/img/logo.svg" />
-    <link rel="stylesheet" href="assets/css/site.css" />
-    <script src="assets/js/site.js" defer></script>
-  </head>
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-    <svg class="sprite" aria-hidden="true" focusable="false">
-      <defs>
-        <symbol id="i-logo" viewBox="0 0 200 200">
-          <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
-            <path d="M18 108c20-30 40-30 60 0s40 30 60 0 30-22 44-8" stroke-width="14" />
-            <path
-              d="M18 146c20-30 40-30 60 0s40 30 60 0 30-22 44-8"
-              stroke-width="8"
-              opacity="0.45"
-            />
-            <path d="M62 60h76" stroke-width="10" />
-            <path d="M74 60V44a8 8 0 0 1 8-8h36a8 8 0 0 1 8 8v16" stroke-width="10" />
-          </g>
-        </symbol>
-        <symbol
-          id="i-moon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" />
-        </symbol>
-        <symbol
-          id="i-sun"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2.5v2" />
-          <path d="M12 19.5v2" />
-          <path d="M4.2 4.2l1.4 1.4" />
-          <path d="M18.4 18.4l1.4 1.4" />
-          <path d="M2.5 12h2" />
-          <path d="M19.5 12h2" />
-          <path d="M4.2 19.8l1.4-1.4" />
-          <path d="M18.4 5.6l1.4-1.4" />
-        </symbol>
-        <symbol
-          id="i-menu"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.9"
-          stroke-linecap="round"
-        >
-          <path d="M4 7h16" />
-          <path d="M4 12h16" />
-          <path d="M4 17h16" />
-        </symbol>
-        <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor">
-          <path
-            d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.8-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9.3 9.3 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.8 1 1.7 1 2.8 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.2 10.2 0 0 0 22 12.2C22 6.6 17.5 2 12 2z"
-          />
-        </symbol>
-        <symbol
-          id="i-download"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 4v10" />
-          <path d="M8 10.5l4 4 4-4" />
-          <path d="M5 19h14" />
-        </symbol>
-        <symbol
-          id="i-monitor"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect x="3" y="4.5" width="18" height="12" rx="1.6" />
-          <path d="M8.5 20.5h7" />
-          <path d="M12 16.5v4" />
-        </symbol>
-        <symbol
-          id="i-list"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M9 6.5h11" />
-          <path d="M9 12h11" />
-          <path d="M9 17.5h11" />
-          <path d="M4.5 6.5h.01" />
-          <path d="M4.5 12h.01" />
-          <path d="M4.5 17.5h.01" />
-        </symbol>
-        <symbol
-          id="i-broom"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M19.5 4.5l-7 7" />
-          <path d="M14.8 9.8l-6 6" />
-          <path d="M9.5 10.5L4 16c-1.4 1.4-1.4 3.6 0 5l4.5-4.5" />
-          <path d="M8.5 21c2 0 5-1 5-4l-3-3" />
-        </symbol>
-        <symbol
-          id="i-undo"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M4 10h9a5 5 0 0 1 0 10H8" />
-          <path d="M8 6l-4 4 4 4" />
-        </symbol>
-        <symbol
-          id="i-shield"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 3l7.5 3v5.2c0 4.6-3.1 8.2-7.5 9.8-4.4-1.6-7.5-5.2-7.5-9.8V6z" />
-          <path d="M8.8 12.1l2.3 2.3 4.2-4.4" />
-        </symbol>
-        <symbol
-          id="i-flask"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M9.5 3v6.2L4.6 17a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3l-4.9-7.8V3" />
-          <path d="M8 3h8" />
-          <path d="M7 14h10" />
-        </symbol>
-      </defs>
-    </svg>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roadmap — Wave Uninstaller</title>
+  <meta name="description" content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature.">
+  <link rel="canonical" href="https://wave-uninstaller.vercel.app/roadmap">
+  <meta name="theme-color" content="#050806">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Wave Uninstaller">
+  <meta property="og:title" content="Roadmap — Wave Uninstaller">
+  <meta property="og:description" content="The six phases of Wave Uninstaller and why the order cannot change: forced uninstallation before a working undo would be a data-loss feature.">
+  <meta property="og:url" content="https://wave-uninstaller.vercel.app/roadmap">
+  <meta property="og:image" content="https://wave-uninstaller.vercel.app/assets/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/logo-180.png">
+  <link rel="preload" href="assets/aqx/fonts/bodoni-moda-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/aqx/fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/aqx/aqx.css">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/aqx/boot.js"></script>
+  <script type="module" src="assets/aqx/aqx.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <canvas class="aqx-sky" aria-hidden="true"></canvas>
+  <div class="aqx-aura" aria-hidden="true"></div>
+  <div class="aqx-progress" aria-hidden="true"></div>
 
-    <header class="site-head">
-      <div class="wrap site-head__inner">
-        <a class="brand" href="index.html">
-          <span class="brand__mark"
-            ><svg><use href="#i-logo"></use></svg
-          ></span>
-          <span class="brand__name">Wave <span>Uninstaller</span></span>
-        </a>
-        <nav class="site-nav" id="site-nav" aria-label="Main">
-          <a href="download.html">Download</a>
-          <a href="roadmap.html" aria-current="page">Roadmap</a>
-          <a href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md" rel="noopener"
-            >Plan</a
-          >
-          <a href="https://github.com/aquaxs1/Wave-uninstaller" rel="noopener">Source</a>
-        </nav>
-        <div class="head-actions">
-          <button
-            class="btn btn--ghost btn--icon"
-            data-theme-toggle
-            type="button"
-            aria-label="Switch theme"
-          >
-            <svg><use href="#i-moon"></use></svg>
-          </button>
-          <a class="btn btn--primary btn--sm btn--cta" href="download.html">Download</a>
-          <button
-            class="btn btn--ghost btn--icon nav-toggle"
-            data-nav-toggle
-            type="button"
-            aria-expanded="false"
-            aria-controls="site-nav"
-            aria-label="Menu"
-          >
-            <svg><use href="#i-menu"></use></svg>
-          </button>
-        </div>
+  <header class="nav" data-stuck="false" data-open="false">
+    <div class="nav-inner">
+      <a class="brand" href="./" aria-label="Wave Uninstaller home"><img src="assets/logo-128.png" alt="" width="32" height="32"><span>Wave Uninstaller</span></a>
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span></button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./#what">What it does</a></li>
+        <li><a href="roadmap" aria-current="page">Roadmap</a></li>
+        <li><a href="https://github.com/aquaxs1/Wave-Uninstaller" rel="noopener">Source</a></li>
+        <li><a class="btn btn-primary btn-sm" href="download">Download</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+<header class="page-head">
+      <div class="stage" data-scene="assets/scene.js" data-mode="mini" aria-hidden="true"><canvas></canvas></div>
+      <div class="page-head-inner">
+        <span class="eyebrow">Six phases</span>
+        <h1>Roadmap</h1>
+        <p class="lead">Six phases. P0 and P1 are done, P2 and P3 in part — Wave removes programs and their leftovers today, and every removal can be put back. The order cannot change: forced uninstallation without a working undo is a data-loss feature.</p>
       </div>
     </header>
 
-    <main id="main">
-      <section class="hero">
-        <div class="wrap hero__inner">
-          <h1>Roadmap</h1>
-          <p class="lead">
-            Six phases. P0 and P1 are done, P2 and P3 in part — Wave removes programs and their
-            leftovers today, and every removal can be put back. The order cannot change: forced
-            uninstallation without a working undo is a data-loss feature.
-          </p>
-        </div>
-      </section>
-
-      <section>
-        <div class="wrap">
-          <ol class="roadmap">
-            <li data-done>
-              <span class="roadmap__phase">P0</span>
-              <div class="roadmap__body">
-                <h3>Inventory</h3>
-                <p>
-                  Read the registry, MSI database and Store packages, merge them into one row per
-                  program, and show it as a sortable list.
-                </p>
-              </div>
-              <span class="tag tag--ok">Done</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>Both registry views, so 32-bit programs are not silently missing</li>
-                  <li>
-                    MSI product codes tie a registry entry to its product; display names are only a
-                    fallback
-                  </li>
-                  <li>Reads that fail become a visible warning, not a silent gap</li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <span class="roadmap__phase">P1</span>
-              <div class="roadmap__body">
-                <h3>Uninstalling</h3>
-                <p>
-                  Start the program's own uninstaller, wait for it to really finish, then remove the
-                  install directory and the uninstall key.
-                </p>
-              </div>
-              <span class="tag tag--ok">Done</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>
-                    Waits on the whole process tree: NSIS and Inno copy themselves to %TEMP% and
-                    exit at once
-                  </li>
-                  <li>
-                    Files move to a backup — the first release that removes anything already had one
-                  </li>
-                  <li>Store packages go through the package manager, not a command line</li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <span class="roadmap__phase">P2</span>
-              <div class="roadmap__body">
-                <h3>The scan</h3>
-                <p>
-                  The actual feature. Search everywhere leftovers hide, score each finding, and
-                  never offer what the protection list claims.
-                </p>
-              </div>
-              <span class="tag tag--next">Partly</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>
-                    Done: Program Files, ProgramData, AppData, start menu shortcuts, vendor keys,
-                    App Paths, startup entries
-                  </li>
-                  <li>
-                    Done: three buckets — safe, review, unsure — each finding carrying its
-                    reasoning, and a protection list that runs before the score exists
-                  </li>
-                  <li>Open: services and scheduled tasks through their own APIs</li>
-                  <li>Open: temp, prefetch, jump lists, shell extensions, shared DLL refcounts</li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <span class="roadmap__phase">P3</span>
-              <div class="roadmap__body">
-                <h3>Undo</h3>
-                <p>
-                  The safety net everything after it depends on. Nothing is deleted, only moved, and
-                  every operation is journalled first.
-                </p>
-              </div>
-              <span class="tag tag--next">Partly</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>Done: files keep their path structure in the backup and move back from it</li>
-                  <li>Done: registry keys stored as JSON and as an importable .reg file</li>
-                  <li>
-                    Done: an append-only journal, written before each step rather than after, so a
-                    crash mid-operation still leaves something to undo
-                  </li>
-                  <li>Open: ACLs and timestamps, retention, an optional system restore point</li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <span class="roadmap__phase">P4</span>
-              <div class="roadmap__body">
-                <h3>The extras</h3>
-                <p>
-                  What people buy Revo for — last, because each one needs P3's undo to already work.
-                </p>
-              </div>
-              <span class="tag">Open</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>Junk hunter: leftovers of programs uninstalled long ago</li>
-                  <li>Startup manager, service and task views</li>
-                  <li>Forced uninstall when a program's own uninstaller is broken</li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <span class="roadmap__phase">P5</span>
-              <div class="roadmap__body">
-                <h3>Shipping</h3>
-                <p>Between working software and something a stranger can install.</p>
-              </div>
-              <span class="tag">Open</span>
-            </li>
-            <li class="roadmap__detail">
-              <span class="roadmap__phase" aria-hidden="true"></span>
-              <div class="roadmap__body">
-                <ul>
-                  <li>Translations</li>
-                  <li>Code signing — without it SmartScreen flags every fresh binary</li>
-                  <li>Automatic updates</li>
-                </ul>
-              </div>
-            </li>
-          </ol>
-
-          <p class="section-cta">
-            <a class="btn btn--primary" href="download.html">
-              <svg><use href="#i-download"></use></svg>
-              Download it
-            </a>
-          </p>
-        </div>
-      </section>
-
-      <section class="section--sunken">
-        <div class="wrap">
-          <div class="section-head">
-            <h2>How this is built</h2>
-            <p>Three crates, one rule between them.</p>
-          </div>
-
-          <div class="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Part</th>
-                  <th>Responsibility</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>wave-core</code></td>
-                  <td>What is installed and what belongs together. Knows nothing about Windows.</td>
-                </tr>
-                <tr>
-                  <td><code>wave-win32</code></td>
-                  <td>Registry, MSI, MSIX. Makes no decisions.</td>
-                </tr>
-                <tr>
-                  <td><code>src-tauri</code></td>
-                  <td>The Tauri shell and the commands the interface calls.</td>
-                </tr>
-                <tr>
-                  <td><code>src</code></td>
-                  <td>The interface: React, TypeScript, Tailwind.</td>
-                </tr>
-                <tr>
-                  <td><code>site</code></td>
-                  <td>This page. Static, no build step.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="section-cta">
-            <a
-              class="btn"
-              href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md"
-              rel="noopener"
-            >
-              The full technical plan
-            </a>
-          </p>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-foot">
+    <section class="sec">
       <div class="wrap">
-        <div class="foot-grid">
-          <div class="foot-brand">
-            <a class="brand" href="index.html">
-              <span class="brand__mark"
-                ><svg><use href="#i-logo"></use></svg
-              ></span>
-              <span class="brand__name">Wave <span>Uninstaller</span></span>
-            </a>
-            <p>
-              Uninstalls a program and removes what its uninstaller leaves behind. Nothing is
-              deleted, only moved to a backup — every step can be undone.
-            </p>
-          </div>
-
-          <div class="foot-col">
-            <h4>Project</h4>
+        <ol class="steps phases">
+          <li class="reveal">
+            <h3>Inventory</h3>
+            <p>Read the registry, MSI database and Store packages, merge them into one row per program, and show it as a sortable list.</p>
             <ul>
-              <li><a href="download.html">Download</a></li>
-              <li><a href="roadmap.html">Roadmap</a></li>
-              <li><a href="index.html#what">What it does</a></li>
-              <li><a href="index.html#trust">Safety</a></li>
+              <li>Both registry views, so 32-bit programs are not silently missing</li>
+              <li>MSI product codes tie a registry entry to its product; display names are only a fallback</li>
+              <li>Reads that fail become a visible warning, not a silent gap</li>
             </ul>
-          </div>
-
-          <div class="foot-col">
-            <h4>Source</h4>
+            <span class="yes status">Done</span>
+          </li>
+          <li class="reveal">
+            <h3>Uninstalling</h3>
+            <p>Start the program's own uninstaller, wait for it to really finish, then remove the install directory and the uninstall key.</p>
             <ul>
-              <li>
-                <a href="https://github.com/aquaxs1/Wave-uninstaller" rel="noopener">Repository</a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/PLAN.md"
-                  rel="noopener"
-                  >Technical plan</a
-                >
-              </li>
-              <li>
-                <a href="https://github.com/aquaxs1/Wave-uninstaller/issues" rel="noopener"
-                  >Report a problem</a
-                >
-              </li>
+              <li>Waits on the whole process tree: NSIS and Inno copy themselves to %TEMP% and exit at once</li>
+              <li>Files move to a backup — the first release that removes anything already had one</li>
+              <li>Store packages go through the package manager, not a command line</li>
             </ul>
-          </div>
-
-          <div class="foot-col">
-            <h4>Legal</h4>
+            <span class="yes status">Done</span>
+          </li>
+          <li class="reveal">
+            <h3>The scan</h3>
+            <p>The actual feature. Search everywhere leftovers hide, score each finding, and never offer what the protection list claims.</p>
             <ul>
-              <li>
-                <a
-                  href="https://github.com/aquaxs1/Wave-uninstaller/blob/main/LICENSE"
-                  rel="noopener"
-                  >License (MIT)</a
-                >
-              </li>
-              <li><a href="terms.html">Terms of Use</a></li>
-              <li><a href="terms.html#privacy">Privacy</a></li>
+              <li>Done: Program Files, ProgramData, AppData, start menu shortcuts, vendor keys, App Paths, startup entries</li>
+              <li>Done: three buckets — safe, review, unsure — each finding carrying its reasoning, and a protection list that runs before the score exists</li>
+              <li>Open: services and scheduled tasks through their own APIs</li>
+              <li>Open: temp, prefetch, jump lists, shell extensions, shared DLL refcounts</li>
             </ul>
-          </div>
-        </div>
-
-        <div class="foot-bottom">
-          <p>&copy; <span data-year>2026</span> AquaXS. Released under the MIT License.</p>
-          <p>Early, unsigned, and honest about it — every removal is backed up and reversible.</p>
+            <span class="maybe status">Partly</span>
+          </li>
+          <li class="reveal">
+            <h3>Undo</h3>
+            <p>The safety net everything after it depends on. Nothing is deleted, only moved, and every operation is journalled first.</p>
+            <ul>
+              <li>Done: files keep their path structure in the backup and move back from it</li>
+              <li>Done: registry keys stored as JSON and as an importable .reg file</li>
+              <li>Done: an append-only journal, written before each step rather than after, so a crash mid-operation still leaves something to undo</li>
+              <li>Open: ACLs and timestamps, retention, an optional system restore point</li>
+            </ul>
+            <span class="maybe status">Partly</span>
+          </li>
+          <li class="reveal">
+            <h3>The extras</h3>
+            <p>What people buy Revo for — last, because each one needs P3's undo to already work.</p>
+            <ul>
+              <li>Junk hunter: leftovers of programs uninstalled long ago</li>
+              <li>Startup manager, service and task views</li>
+              <li>Forced uninstall when a program's own uninstaller is broken</li>
+            </ul>
+            <span class="no status">Open</span>
+          </li>
+          <li class="reveal">
+            <h3>Shipping</h3>
+            <p>Between working software and something a stranger can install.</p>
+            <ul>
+              <li>Translations</li>
+              <li>Code signing — without it SmartScreen flags every fresh binary</li>
+              <li>Automatic updates</li>
+            </ul>
+            <span class="no status">Open</span>
+          </li>
+        </ol>
+        <div class="btn-row reveal">
+          <a class="btn btn-primary" href="download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Download it</a>
         </div>
       </div>
-    </footer>
-  </body>
+    </section>
+
+    <section class="sec">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="eyebrow">Architecture</span>
+          <h2>How this is <em>built</em></h2>
+          <p class="lead">Three crates, one rule between them.</p>
+        </div>
+        <div class="table-wrap reveal">
+          <table>
+            <thead>
+              <tr>
+                <th>Part</th>
+                <th>Responsibility</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>wave-core</code></td>
+                <td>What is installed and what belongs together. Knows nothing about Windows.</td>
+              </tr>
+              <tr>
+                <td><code>wave-win32</code></td>
+                <td>Registry, MSI, MSIX. Makes no decisions.</td>
+              </tr>
+              <tr>
+                <td><code>src-tauri</code></td>
+                <td>The Tauri shell and the commands the interface calls.</td>
+              </tr>
+              <tr>
+                <td><code>src</code></td>
+                <td>The interface: React, TypeScript, Tailwind.</td>
+              </tr>
+              <tr>
+                <td><code>site</code></td>
+                <td>This page. Static, no build step.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="btn-row reveal">
+          <a class="btn" href="https://github.com/aquaxs1/Wave-Uninstaller/blob/main/PLAN.md" rel="noopener">The full technical plan<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-about">
+          <a class="brand" href="./"><img src="assets/logo-128.png" alt="" width="32" height="32" loading="lazy"><span>Wave Uninstaller</span></a>
+          <p>Uninstalls a program and removes what its uninstaller leaves behind. Nothing is deleted, only moved to a backup — every step can be undone.</p>
+        </div>
+        <nav class="footer-col" aria-label="Project">
+          <h2>Project</h2>
+          <ul>
+            <li><a href="download">Download</a></li>
+            <li><a href="roadmap">Roadmap</a></li>
+            <li><a href="./#what">What it does</a></li>
+            <li><a href="./#trust">Safety</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Source">
+          <h2>Source</h2>
+          <ul>
+            <li><a href="https://github.com/aquaxs1/Wave-Uninstaller" rel="noopener">Repository</a></li>
+            <li><a href="https://github.com/aquaxs1/Wave-Uninstaller/blob/main/PLAN.md" rel="noopener">Technical plan</a></li>
+            <li><a href="https://github.com/aquaxs1/Wave-Uninstaller/issues" rel="noopener">Report a problem</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Legal">
+          <h2>Legal</h2>
+          <ul>
+            <li><a href="https://github.com/aquaxs1/Wave-Uninstaller/blob/main/LICENSE" rel="noopener">License (MIT)</a></li>
+            <li><a href="terms">Terms of Use</a></li>
+            <li><a href="terms#privacy">Privacy</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="family">
+        <span class="family-label">More by AquAxs</span>
+        <ul>
+          <li><a href="https://aqua.is-a.dev/portfolio" data-home rel="noopener">All projects</a></li>
+          <li><a href="https://pfpair.app/" rel="noopener">Pfpair</a></li>
+          <li><a href="https://handled-market.vercel.app/" rel="noopener">Handled</a></li>
+          <li><a href="https://larpcorddc.vercel.app/" rel="noopener">Larpcord</a></li>
+          <li><a href="https://mybluejarvis.vercel.app/" rel="noopener">My Jarvis</a></li>
+          <li><a href="https://guardiantus-av.vercel.app/" rel="noopener">Guardiantus AV</a></li>
+          <li><a href="https://explorer-manager.vercel.app/" rel="noopener">Explorer Manager</a></li>
+          <li><a href="https://cipher-box-file-encrypter.vercel.app/" rel="noopener">CipherBox</a></li>
+          <li><a href="https://easy-cloner.vercel.app/" rel="noopener">Easy Server Cloner</a></li>
+          <li><a href="https://simple-skin.vercel.app/" rel="noopener">Simple Skin</a></li>
+          <li><a href="https://autobuild-gui.vercel.app/" rel="noopener">Autobuild GUI</a></li>
+          <li><a href="https://timetrackerextension.vercel.app/" rel="noopener">WebsiteTimeTrack</a></li>
+          <li><a href="https://discord-sakurabot.vercel.app/" rel="noopener">Sakura Bot</a></li>
+          <li><a href="https://revox-client.vercel.app/" rel="noopener">Revox Client</a></li>
+          <li><a href="https://chesstrainer.cc.cd/" rel="noopener">Chess Trainer</a></li>
+        </ul>
+      </div>
+      <div class="footer-legal">
+        <p>© 2026 AquAxs. Released under the MIT License.</p>
+        <p>Early, unsigned, and honest about it — every removal is backed up first.</p>
+      </div>
+    </div>
+  </footer>
+</body>
 </html>

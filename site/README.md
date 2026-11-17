@@ -1,93 +1,44 @@
 # Wave Uninstaller — website
 
-Static marketing and documentation site. No framework, no build step — the same
-rule the product follows.
+The site at <https://wave-uninstaller.vercel.app>. Plain HTML, CSS and JavaScript: no build
+step, no framework, nothing loaded from another host.
 
-## Deploy to Vercel
+| File | What it is |
+| --- | --- |
+| `index.html` | Landing page |
+| `download.html` | Download |
+| `roadmap.html` | Roadmap |
+| `terms.html` | Terms of Use |
+| `404.html` | Shown for any address that does not exist |
+| `assets/site.css` | This project's accent colour and anything only this site needs |
+| `assets/scene.js` | The 3D scene in the page header |
+| `assets/aqx/` | The look and behaviour shared by all AquAxs project sites |
 
-The `site/` directory is the whole deployment. Nothing is compiled.
+## The shared part
 
-**From the dashboard**
+`assets/aqx/` is the same in every project site: the stylesheet (`aqx.css`),
+the interactions (`aqx.js`), the 3D stage (`stage.js`), three.js and the three
+typefaces. It follows the portfolio at aqua.is-a.dev: a black sky with slow
+dots, glass cards that lean towards the pointer, Bodoni Moda headlines.
+Change the accent in `assets/site.css` (`--ac`, `--ac-hi`), not in `aqx.css`.
 
-1. Import the repository at [vercel.com/new](https://vercel.com/new).
-2. Set **Root Directory** to `site`.
-3. Framework preset: **Other**. Leave the build and output commands empty.
-4. Deploy.
+## The 3D scene
 
-**From the CLI**
+`assets/scene.js` exports one function that builds its objects into
+`stage.frame`. The stage (`assets/aqx/stage.js`) does the rest: camera, lights,
+resizing, pointer and touch, pausing off screen. With reduced motion the scene
+is one still frame; without WebGL a glow in the accent colour stays instead.
 
-```bash
-cd site
-vercel --prod
-```
+## Preview
 
-`vercel.json` sets `cleanUrls` (so `/roadmap` serves `roadmap.html`) and the
-security headers, including a CSP with no inline script or style. Keep it that
-way: an inline `style=` attribute or `<script>` block is silently dropped by the
-browser once the site is live, which is a miserable thing to debug.
-
-Vercel is the only host, and the `canonical` links, the Open Graph URLs and
-`sitemap.xml` point at it. (There used to be a GitHub Pages mirror workflow; it
-was removed because Pages was never enabled for the repository. If you add
-another host, name it in the privacy section of `terms.html`.)
-
-## The download links
-
-`download.html` points at
-`github.com/aquaxs1/Wave-uninstaller/releases/latest/download/<asset>`, which
-always resolves to the newest published release. The asset names carry no
-version for exactly that reason, so a new release needs no change here.
-The binaries come from
-[`.github/workflows/release.yml`](../.github/workflows/release.yml).
-
-## The domain
-
-`https://wave-uninstaller.vercel.app` is written into four places. Change all
-four together if the site ever moves:
-
-- the `<link rel="canonical">` and `og:url` in every `.html`
-- `og:image` in every `.html`
-- `robots.txt`
-- `sitemap.xml`
-
-## Pages
-
-| File | Purpose |
-|---|---|
-| `index.html` | Landing page — what it does, why it is safe, where it stands |
-| `download.html` | The Windows builds, plus checksums and how to build it yourself |
-| `roadmap.html` | All six phases in detail, plus how the code is laid out |
-| `terms.html` | Terms of Use and privacy |
-| `404.html` | Not found |
-
-## Assets
-
-| File | Purpose |
-|---|---|
-| `assets/css/site.css` | The design system |
-| `assets/js/site.js` | Theme, mobile nav, footer year |
-| `assets/img/logo.svg` | The wordmark's mark, also the favicon |
-| `assets/img/og-image.png` | Social preview, 1200×630 |
-| `assets/img/inventory.png` | Screenshot of the app, also used by the root README |
-
-Colours are monochrome by design, the same system the sibling projects use:
-white, black, grey, with colour reserved for state. Green means done, amber
-means be careful with this.
-
-## Viewing it locally
+Links have no `.html` (Vercel serves `/download` from `download.html`), so open
+the folder through a server that does the same:
 
 ```bash
-python3 -m http.server 4173 --directory site
+npx serve site
 ```
 
-Then open `http://localhost:4173`. Opening `index.html` by double-click works
-too — every path is relative.
+## Deploy
 
-## Editing
-
-Plain HTML. The header and footer are repeated per page; keep them in sync when
-you change navigation. Adding a page means adding it to:
-
-1. The nav markup in each page header
-2. The footer links
-3. `sitemap.xml`
+Vercel, root directory `site`, no build command. `vercel.json` sets clean URLs
+and the security headers. The site sets no cookies and stores nothing.

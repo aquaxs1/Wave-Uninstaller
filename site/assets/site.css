@@ -1,0 +1,45 @@
+/* Wave Uninstaller — the blue of the wave in the logo. Everything else is assets/aqx/aqx.css. */
+
+:root {
+  --ac: #3ecbff;
+  --ac-hi: #a4e7ff;
+  --ac-ink: #021019;
+}
+
+/* The roadmap counts phases from P0, and each one says how far it is. */
+.phases {
+  counter-reset: step -1;
+}
+
+.phases > li::before {
+  content: 'P' counter(step);
+}
+
+.phases > li {
+  padding-right: 6.5rem;
+}
+
+.phases .status {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.2rem;
+}
+
+.phases ul {
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.phases ul li::marker {
+  color: var(--ac);
+}
+
+@media (max-width: 560px) {
+  .phases > li {
+    padding-right: 1.4rem;
+    padding-top: 3.4rem;
+  }
+}

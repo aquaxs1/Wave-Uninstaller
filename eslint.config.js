@@ -4,19 +4,24 @@ import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "src-tauri/target", "target"] },
+  // three.js is vendored as published: one minified file, not ours to lint.
+  { ignores: ["dist", "src-tauri/target", "target", "site/assets/aqx/three.module.min.js"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    // The website's script is a classic browser script loaded with `defer`,
-    // not a module — without the browser globals every DOM call reads as an
-    // undefined variable.
+    // The website's scripts are ES modules that run in the browser — without
+    // the browser globals every DOM call reads as an undefined variable.
     files: ["site/**/*.js"],
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: "script",
+      sourceType: "module",
       globals: globals.browser,
     },
+  },
+  {
+    // The one classic script: it runs before the page paints.
+    files: ["site/assets/aqx/boot.js"],
+    languageOptions: { sourceType: "script" },
   },
   {
     files: ["src/**/*.{ts,tsx}"],
